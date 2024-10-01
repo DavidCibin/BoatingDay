@@ -1,0 +1,161 @@
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
+import { getWindDirection } from "./utils/wind";
+
+
+interface CurrentWeather {
+    name: string;
+    weather: { icon: string; description: string }[];
+    main: { temp: number; feels_like: number; temp_min: number; temp_max: number; humidity: number };
+    wind: { speed: number; deg: number };
+}
+
+export default function CurrentForecast({ currentWeather }: { currentWeather: CurrentWeather }): JSX.Element {
+    console.log("Initial CurrentForecast: ", currentWeather);
+    if (!Object.keys(currentWeather).length) {
+        return (
+            <View>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+    return (
+        <View style={styles.currentView}>
+            <Text style={styles.city}>{currentWeather.name}</Text>
+            <View style={styles.mainInfoContainer}>
+                <View style={styles.currentTempView}>
+                    <Image
+                        source={{
+                            uri: `http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`,
+                        }}
+                        style={styles.weatherIcon}
+                        resizeMode={"contain"}
+                    />
+                    <Text style={styles.currentDegrees}>
+                        {Math.round(currentWeather.main.temp)}°F
+                    </Text>
+                </View>
+                <Text style={styles.description}>
+                    {currentWeather.weather[0].description}
+                </Text>
+            </View>
+            <View style={styles.secondaryInfoContainer}>
+                <View style={styles.row}>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>Feels</Text>
+                        <Text style={styles.details}>
+                            {Math.round(currentWeather.main.feels_like)}°F
+                        </Text>
+                    </View>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>Low</Text>
+                        <Text style={styles.details}>
+                            {Math.round(currentWeather.main.temp_min)}°F
+                        </Text>
+                    </View>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>High</Text>
+                        <Text style={styles.details}>
+                            {Math.round(currentWeather.main.temp_max)}°F
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.row}>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>Humidity</Text>
+                        <Text style={styles.details}>
+                            {currentWeather.main.humidity}%
+                        </Text>
+                    </View>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>Wind</Text>
+                        <Text style={styles.details}>
+                            {currentWeather.wind.speed} mph
+                        </Text>
+                    </View>
+                    <View style={styles.detailsBox}>
+                        <Text style={styles.label}>Direction</Text>
+                        <Text style={styles.wind}>
+                            {getWindDirection(currentWeather.wind.deg)}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    currentView: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+    },
+    currentTempView: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    mainInfoContainer: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    description: {
+        color: 'white',
+        fontSize: 15,
+        textTransform: 'capitalize',
+    },
+    secondaryInfoContainer: {
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 20,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 20,
+        width: '95%',
+        maxWidth: 478,
+    },
+    weatherIcon: {
+        width: 50,
+        height: 50,
+    },
+    city: {
+        color: 'white',
+        justifyContent: 'center',
+        marginTop: 10,
+        fontSize: 15,
+    },
+    currentDegrees: {
+        color: 'white',
+        justifyContent: 'center',
+        marginTop: 10,
+        fontSize: 60,
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        color: 'black',
+        padding: 10,
+    },
+    detailsBox: {
+        display: 'flex',
+        width: '33.3%',
+        paddingLeft: 20,
+    },
+    label: {
+        fontSize: 18,
+    },
+    details: {
+        color: 'black',
+        fontSize: 15,
+    },
+    wind: {
+        color: 'black',
+        fontSize: 18,
+    },
+});
+
