@@ -8,7 +8,7 @@ import {
     View,
     Text,
 } from "react-native";
-import Weather from "./src/Weather";
+import Main from "./src/Main";
 import WaveAnimation from "./src/WaveAnimation";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Location from "expo-location";
@@ -49,7 +49,7 @@ export default function App(): JSX.Element {
     /*****************************************************************/
     /* Constants */
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? "midnightblue" : "dodgerblue",
+        backgroundColor: isDarkMode ? "midnightblue" : "#172f46",
         // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
@@ -90,7 +90,7 @@ export default function App(): JSX.Element {
                     >
                         {/* <GeoLocation setLoading={setIsLoading} /> */}
                         {position ? (
-                            <Weather position={position} />
+                            <Main position={position} />
                         ) : (
                             <Text>Waiting for location...</Text>
                         )}

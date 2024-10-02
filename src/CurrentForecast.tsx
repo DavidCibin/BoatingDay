@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         textTransform: 'capitalize',
     },
     secondaryInfoContainer: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: '#2a4c6d',
         borderRadius: 20,
         display: 'flex',
         alignItems: 'center',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         justifyContent: 'space-between',
-        color: 'black',
+        color: 'white',
         padding: 10,
     },
     detailsBox: {
@@ -147,15 +147,16 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     label: {
-        fontSize: 18,
+        color: 'white',
+        fontSize: 12,
     },
     details: {
-        color: 'black',
-        fontSize: 15,
+        color: 'white',
+        fontSize: 22,
     },
     wind: {
-        color: 'black',
-        fontSize: 18,
+        color: 'white',
+        fontSize: 24,
     },
 });
 

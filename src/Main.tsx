@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import CurrentForecast from "./CurrentForecast";
 import ForecastSearch from "./ForecastSearch";
+import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
 
 interface WeatherProps {
@@ -16,8 +17,8 @@ interface WeatherProps {
 }
 
 
-export default function Weather({ position }: WeatherProps): JSX.Element {
-    console.log("Initial Location on WEATHER: ", position);
+export default function Main({ position }: WeatherProps): JSX.Element {
+    console.log("Initial Location on Main: ", position);
     /*****************************************************************/
     /* State */
     const [toggleSearch, setToggleSearch] = useState("city");
@@ -115,6 +116,7 @@ export default function Weather({ position }: WeatherProps): JSX.Element {
                     <CurrentForecast
                         currentWeather={weather}
                     />
+                    <TideGraph station={'8446493'} location={'Plymouth, MA'} />
                 </ImageBackground>
             ) : (
                 <Text style={styles.noWeather}>No Weather to show</Text>
