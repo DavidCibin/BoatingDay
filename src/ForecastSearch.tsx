@@ -32,18 +32,20 @@ const ForecastSearch = ({
     <View style={styles.container}>
       <View style={styles.searchBy}>
         <Text style={styles.buttonLabel}>Search By</Text>
-        <Button
-          title="City"
-          color={toggleSearch === "city" ? "white" : "rgba(255, 255, 255, 0.6)"}
+        <Text
+          style={[styles.cityOrZip, { color: toggleSearch === "city" ? "white" : "rgba(255, 255, 255, 0.6)" }]}
           accessibilityLabel="Search Weather By City"
           onPress={setToggleByCity}
-        />
-        <Button
-          title="Postal Code/Zip"
-          color={toggleSearch === "city" ? "rgba(255, 255, 255, 0.6)" : "white"}
+        >
+          City
+        </Text>
+        <Text
+          style={[styles.cityOrZip, { color: toggleSearch === "city" ? "rgba(255, 255, 255, 0.6)" : "white" }]}
           accessibilityLabel="Search Weather By ZIP/Postal Code"
           onPress={setToggleByPostal}
-        />
+        >
+          Zip Code
+        </Text>
       </View>
 
       <TextInput
@@ -65,6 +67,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 35,
   },
+  cityOrZip: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   searchBy: {
     flexDirection: "row",
     color: "white",
@@ -75,6 +82,7 @@ const styles = StyleSheet.create({
     maxWidth: 700,
   },
   buttonLabel: {
+    fontSize: 12,
     color: "white",
     marginRight: 10,
   },

@@ -33,6 +33,7 @@ export default function TideGraph({ station, location }: { station: string; loca
       margin: 10,
     },
     button: {
+      display: "none", // TODO: buttons are hidden for now
       alignItems: 'center',
       justifyContent: 'center',
       paddingVertical: 5,
@@ -50,9 +51,9 @@ export default function TideGraph({ station, location }: { station: string; loca
       color: 'white',
     },
     locationText: {
-      color: '#3a92da',
-      fontSize: 30,
-      fontWeight: 'bold',
+      color: 'white',
+      fontSize: 15,
+      // fontWeight: 'bold',
       textShadowColor: '#333',
       textShadowOffset: { width: -1, height: 1 },
       textShadowRadius: 5,
@@ -62,10 +63,12 @@ export default function TideGraph({ station, location }: { station: string; loca
       backgroundColor: '#2a4c6d',
       borderRadius: 20,
       padding: 10,
+      overflow: "hidden",
+      width: "95%",
     },
     chart: {
-      margin: 0,
-      padding: 0,
+      marginLeft: -5,
+      paddingTop: 12,
     },
   });
 
@@ -180,7 +183,7 @@ export default function TideGraph({ station, location }: { station: string; loca
         <View style={styles.chartContainer}>
           <LineChart
             data={tideData}
-            width={Dimensions.get('window').width * 0.9}
+            width={Dimensions.get('window').width * 1.05}
             height={220}
             withHorizontalLines={false}
             withVerticalLines={false}
