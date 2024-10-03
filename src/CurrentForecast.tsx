@@ -11,7 +11,6 @@ interface CurrentWeather {
 }
 
 export default function CurrentForecast({ currentWeather }: { currentWeather: CurrentWeather }): JSX.Element {
-    console.log("Initial CurrentForecast: ", currentWeather);
     if (!Object.keys(currentWeather).length) {
         return (
             <View>

@@ -1,36 +1,46 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const ForecastSearch = ({
-  toggleSearch,
-  setToggleSearch,
-  city,
-  setCity,
-  fetchLatLongHandler,
-  fetchByPostalHandler,
-  setPostalCode,
-  postalCode,
+  // toggleSearch,
+  // setToggleSearch,
+  location,
+  setLocation,
+  // fetchLatLongHandler,
+  fetchByLocationHandler,
+  // setPostalCode,
+  // postalCode,
 }) => {
-  const handleSubmit = (e) => {
-    if (toggleSearch === "city") {
-      fetchLatLongHandler();
-    }
-    if (toggleSearch === "postal") {
-      fetchByPostalHandler();
-    }
+  const [searchValue, setSetsearchValue] = useState("");
+  const handleSubmit = () => {
+    console.log("SEARCH VALUE: ", searchValue);
+    
+    setLocation(searchValue)
+    fetchByLocationHandler(searchValue);
+    
+    // if (toggleSearch === "city") {
+    //   fetchLatLongHandler();
+    // }
+    // if (toggleSearch === "postal") {
+    //   fetchByPostalHandler();
+    // }
   };
 
-  const setToggleByCity = () => {
-    setToggleSearch("city");
-  };
+  // const setToggleByCity = () => {
+  //   setToggleSearch("city");
+  // };
 
-  const setToggleByPostal = () => {
-    setToggleSearch("postal");
-  };
+  // const setToggleByPostal = () => {
+  //   setToggleSearch("postal");
+  // };
+
+  useEffect(() => {
+    setSetsearchValue(location);
+  }, [location]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBy}>
+      {/* <View style={styles.searchBy}>
         <Text style={styles.buttonLabel}>Search By</Text>
         <Text
           style={[styles.cityOrZip, { color: toggleSearch === "city" ? "white" : "rgba(255, 255, 255, 0.6)" }]}
@@ -46,15 +56,13 @@ const ForecastSearch = ({
         >
           Zip Code
         </Text>
-      </View>
+      </View> */}
 
       <TextInput
         style={styles.searchCity}
-        onChangeText={toggleSearch === "city" ? setCity : setPostalCode}
-        value={toggleSearch === "city" ? city : postalCode}
-        placeholder={
-          toggleSearch === "city" ? "Search By City" : "Search By Postal Code"
-        }
+        onChangeText={setSetsearchValue}
+        value={searchValue}
+        placeholder={"City, State or Zip Code"}
         onSubmitEditing={handleSubmit}
       />
     </View>

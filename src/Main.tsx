@@ -12,24 +12,16 @@ import ForecastSearch from "./ForecastSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
 
-interface WeatherProps {
+export interface WeatherProps {
     position: Location.LocationObject;  // Using LocationObject from expo-location
 }
 
-
 export default function Main({ position }: WeatherProps): JSX.Element {
-    console.log("Initial Location on Main: ", position);
     /*****************************************************************/
     /* State */
-    const [toggleSearch, setToggleSearch] = useState("city");
-    const [city, setCity] = useState("Lakeville");
-    const [postalCode, setPostalCode] = useState("02347");
-    const [lat, setLat] = useState(41.8459);
-    const [long, setLong] = useState(-70.9495);
+    const [location, setLocation] = useState<string>("");
     const [weather, setTodaysWeather] = useState({});
-    // const [weatherDaily, setDailyWeather] = useState({});
-    // const [position, setPosition] = useState(null);
-    const [errorMsg, setErrorMsg] = useState(null);
+    const [coordinates, setCoordinates] = useState<number[]>([]);
 
     /*****************************************************************/
     /* Constants */
@@ -39,48 +31,62 @@ export default function Main({ position }: WeatherProps): JSX.Element {
 
     /*****************************************************************/
     /* Data Fetching */
-    //fetch lat long by city
-    const fetchLatLongHandler = () => {
+
+
+    // Fetch by location (city or zip code). ONLY WHEN USER SEARCHES!!
+    const fetchByLocationHandler = (location: string | number) => {
         axios
             .get(
-                 `http://api.openweathermap.org/data/2.5/weather?q=${city}&APPID=${weatherKey}`
+                 `https://nominatim.openstreetmap.org/search?q=${location}&format=json&addressdetails=1&limit=1`
             )
             .then(function (response) {
-                console.log("weather response BY CITY", response.data);
-                setLat(response.data.coord.lat);
-                setLong(response.data.coord.lon);
-                getWeather(response.data.coord.lat, response.data.coord.lon);
+                console.log("Google response BY CITY or ZIPCODE", response.data[0]);
+                // TODO: Handle if no data is returned (wrong adress or something like that)
+                const data = response.data[0].address;
+                const local = `${data.city ? data.city : data.village}, ${data.county ? data.county : data.district}, ${data.state}`;
+                setLocation(local);
+                setCoordinates([response.data[0].lat, response.data[0].lon]);
+                getWeather(data.postcode);
             })
             .catch(function (error: any) {
                 console.error(error);
             });
     };
-
+    
     //fetch lat long by postal code/zip since OpenWeather Api only accepts zips
-    const fetchByPostalHandler = () => {
+    const fetchByGeolocationHandler = (lat: number, lon: number) => {
         axios
             .get(
-                 `https://maps.googleapis.com/maps/api/geocode/json?key=${googleKey}&components=postal_code:${postalCode}`
+                 `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
             )
             .then(function (response) {
-                console.log("Google response BY ZIPCODE", response.data);
-                setLat(response.data.results[0].geometry.location.lat);
-                setLong(response.data.results[0].geometry.location.lng);
+                // console.log(`https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`, response.data);
+                const data = response.data.features[0].properties
+                const location = `${data.geocoding.city}, ${data.geocoding.county ? data.geocoding.county : data.geocoding.district}, ${data.geocoding.state}`;
+                setLocation(location);
+                getWeather([lat, lon]);
+                setCoordinates([lat, lon]);
             })
             .catch(function (error: any) {
                 console.error(error);
             });
     };
 
-    const getWeather = (lat: number, lon: number) => {
+    const getWeather = (params: number | number[]) => {
+        let q: string = "";
+        if (typeof params === "number") {
+            q = `zip=${params}`;
+        } else {
+            q = `lat=${params[0]}&lon=${params[1]}`;
+        }
         axios
             .get(
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&exclude=hourly,minutely&units=imperial&appid=${weatherKey}`
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${weatherKey}`
             )
             .then(function (response) {
-                console.log("weather response", response.data);
-                setTodaysWeather(response.data);
-                setCity(response.data.name);
+                console.log("WEATHER RESPONSE", response.data);
+                const data = response.data;
+                setTodaysWeather(data);
             })
             .catch(function (error: any) {
                 console.log(error);
@@ -90,33 +96,27 @@ export default function Main({ position }: WeatherProps): JSX.Element {
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-        if (position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            getWeather(lat, lon);
-        }
+        console.log("HERE ONLY ONE TIME??");
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        fetchByGeolocationHandler(lat, lon);
     }, [position]);
 
     /*****************************************************************/
     /* Render */
     return (
         <View style={styles.container}>
-            {weather ? (
+            {weather && location ? (
                 <ImageBackground source={bgImg} style={styles.imageBackground}>
                     <ForecastSearch
-                        city={city}
-                        setCity={setCity}
-                        fetchLatLongHandler={fetchLatLongHandler}
-                        toggleSearch={toggleSearch}
-                        setToggleSearch={setToggleSearch}
-                        fetchByPostalHandler={fetchByPostalHandler}
-                        setPostalCode={setPostalCode}
-                        postalCode={postalCode}
+                        location={location}
+                        setLocation={setLocation}
+                        fetchByLocationHandler={fetchByLocationHandler}
                     />
                     <CurrentForecast
                         currentWeather={weather}
                     />
-                    <TideGraph station={'8446493'} location={'Plymouth, MA'} />
+                    <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
                 <Text style={styles.noWeather}>No Weather to show</Text>

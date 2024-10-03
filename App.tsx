@@ -7,6 +7,7 @@ import {
     StyleSheet,
     View,
     Text,
+    Button,
 } from "react-native";
 import Main from "./src/Main";
 import WaveAnimation from "./src/WaveAnimation";
@@ -22,22 +23,23 @@ export default function App(): JSX.Element {
     );
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPermissionGranted, setIsPermissionGranted] = useState(true);
 
     /*****************************************************************/
     /* Functions */
     const getGeolocation = async () => {
         setIsLoading(true);
         setPosition(null);
-        let { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        setIsPermissionGranted(status === "granted");
         if (status !== "granted") {
             setErrorMsg("Permission to access location was denied");
             setIsLoading(false);
             return;
         }
-
+        console.log("PERMISSION GRANTED");
         try {
             const location = await Location.getCurrentPositionAsync({});
-            console.log("Initial Position from geolocation: ", location);
             setPosition(location);
         } catch (error) {
             setErrorMsg("Error fetching location");
@@ -62,42 +64,51 @@ export default function App(): JSX.Element {
     /*****************************************************************/
     /* Render */
     return (
-        <SafeAreaView style={[backgroundStyle, styles.container]}>
-            <StatusBar
-                barStyle={isDarkMode ? "dark-content" : "light-content"}
-                backgroundColor={backgroundStyle.backgroundColor}
-            />
-            {isLoading ? (
-                // Show the WaveAnimation while loading
-                <ScrollView
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={backgroundStyle}
-                >
-                    <WaveAnimation />
-                </ScrollView>
-            ) : (
-                // Render the regular content when after loading
-                <ScrollView
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={backgroundStyle}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
+        isPermissionGranted ? (
+
+            <SafeAreaView style={[backgroundStyle, styles.container]}>
+                <StatusBar
+                    barStyle={isDarkMode ? "dark-content" : "light-content"}
+                    backgroundColor={backgroundStyle.backgroundColor}
+                />
+                {isLoading ? (
+                    // Show the WaveAnimation while loading
+                    <ScrollView
+                        contentInsetAdjustmentBehavior="automatic"
+                        style={backgroundStyle}
                     >
-                        {/* <GeoLocation setLoading={setIsLoading} /> */}
-                        {position ? (
-                            <Main position={position} />
-                        ) : (
-                            <Text>Waiting for location...</Text>
-                        )}
-                    </View>
-                </ScrollView>
-            )}
-        </SafeAreaView>
+                        <WaveAnimation />
+                    </ScrollView>
+                ) : (
+                    // Render the regular content when after loading
+                    <ScrollView
+                        contentInsetAdjustmentBehavior="automatic"
+                        style={backgroundStyle}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            {/* <GeoLocation setLoading={setIsLoading} /> */}
+                            {position ? (
+                                <Main position={position} />
+                            ) : (
+                                <Text>Waiting for location...</Text>
+                            )}
+                        </View>
+                    </ScrollView>
+                )}
+            </SafeAreaView>
+        ) : (
+            <SafeAreaView style={[backgroundStyle, styles.container]}>
+                <Text>Permission to access location was denied</Text>
+                <Text>Please, allow location access to continue</Text>
+                <Button title="Try Again" onPress={getGeolocation} />
+            </SafeAreaView>
+        )
     );
 }
 
