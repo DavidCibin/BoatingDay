@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import CurrentForecast from "./CurrentForecast";
-import ForecastSearch from "./ForecastSearch";
+import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
 
@@ -112,7 +112,7 @@ export default function Main({ position }: WeatherProps): JSX.Element {
         <View style={styles.container}>
             {weather && location ? (
                 <ImageBackground source={bgImg} style={styles.imageBackground}>
-                    <ForecastSearch
+                    <LocationSearch
                         location={location}
                         setLocation={setLocation}
                         fetchByLocationHandler={fetchByLocationHandler}
