@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Main from "./src/Main";
 import WaveAnimation from "./src/WaveAnimation";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Location from "expo-location";
 
 export default function App(): JSX.Element {
@@ -51,8 +50,7 @@ export default function App(): JSX.Element {
     /*****************************************************************/
     /* Constants */
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? "midnightblue" : "#172f46",
-        // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        backgroundColor: isDarkMode ? "#233e59" : "#172f46",
     };
 
     /*****************************************************************/
@@ -63,59 +61,57 @@ export default function App(): JSX.Element {
 
     /*****************************************************************/
     /* Render */
-    return (
-        isPermissionGranted ? (
-
-            <SafeAreaView style={[backgroundStyle, styles.container]}>
-                <StatusBar
-                    barStyle={isDarkMode ? "dark-content" : "light-content"}
-                    backgroundColor={backgroundStyle.backgroundColor}
-                />
-                {isLoading ? (
-                    // Show the WaveAnimation while loading
-                    <ScrollView
-                        contentInsetAdjustmentBehavior="automatic"
-                        style={backgroundStyle}
+    return isPermissionGranted ? (
+        <SafeAreaView style={[styles.views, styles.container]}>
+            <StatusBar
+                barStyle={isDarkMode ? "dark-content" : "light-content"}
+                backgroundColor={backgroundStyle.backgroundColor}
+            />
+            {isLoading ? (
+                <ScrollView
+                    contentInsetAdjustmentBehavior="automatic"
+                    style={styles.views}
+                >
+                    <WaveAnimation />
+                </ScrollView>
+            ) : (
+                <ScrollView
+                    contentInsetAdjustmentBehavior="automatic"
+                    style={styles.views}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
                     >
-                        <WaveAnimation />
-                    </ScrollView>
-                ) : (
-                    // Render the regular content when after loading
-                    <ScrollView
-                        contentInsetAdjustmentBehavior="automatic"
-                        style={backgroundStyle}
-                    >
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            {/* <GeoLocation setLoading={setIsLoading} /> */}
-                            {position ? (
-                                <Main position={position} />
-                            ) : (
-                                <Text>Waiting for location...</Text>
-                            )}
-                        </View>
-                    </ScrollView>
-                )}
-            </SafeAreaView>
-        ) : (
-            <SafeAreaView style={[backgroundStyle, styles.container]}>
-                <Text>Permission to access location was denied</Text>
-                <Text>Please, allow location access to continue</Text>
-                <Button title="Try Again" onPress={getGeolocation} />
-            </SafeAreaView>
-        )
+                        {/* <GeoLocation setLoading={setIsLoading} /> */}
+                        {position ? (
+                            <Main position={position} />
+                        ) : (
+                            <Text>Waiting for location...</Text>
+                        )}
+                    </View>
+                </ScrollView>
+            )}
+        </SafeAreaView>
+    ) : (
+        <SafeAreaView style={[styles.views, styles.container]}>
+            <Text>{errorMsg}</Text>
+            <Text>Please, allow location access to continue</Text>
+            <Button title="Try Again" onPress={getGeolocation} />
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      width: "100%",
-      height: "100%",
-  },
+    container: {
+        flex: 1,
+        width: "100%",
+        height: "100%",
+    },
+    views: {
+        backgroundColor: "#172f46",
+    },
 });
