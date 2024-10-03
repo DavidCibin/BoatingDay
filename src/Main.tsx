@@ -20,7 +20,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
     /*****************************************************************/
     /* Constants */
     const bgImg = { uri: "../assets/images/4.png" };
-    const weatherKey = "a0623b11ae5b6d63b28da3564cdd91c7";
+    const WEATHER_API_KEY = "a0623b11ae5b6d63b28da3564cdd91c7";
 
     /*****************************************************************/
     /* Data Fetching */
@@ -76,7 +76,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
         }
         try {
             const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${weatherKey}`
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${WEATHER_API_KEY}`
             );
             setTodaysWeather(response.data);
         } catch (error) {
