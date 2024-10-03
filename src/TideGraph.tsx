@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   // Pressable,
-  // Text,
+  Text,
 } from 'react-native';
 import axios from 'axios';
 import moment from 'moment';
@@ -14,7 +14,7 @@ import moment from 'moment';
 //   DateTimePickerEvent,
 // } from '@react-native-community/datetimepicker';
 
-import DropdownOptions from './utils/DropdownOptions';
+import DropdownMenu from './utils/DropdownMenu';
 
 export default function TideGraph({ coordinates }: { coordinates: number[] }): React.JSX.Element {
   /*****************************************************************/
@@ -26,6 +26,7 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [allTideStations, setAllTideStations] = useState();
   const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
+  const [stationName, setStationName] = useState<string>("");
 
   const [tideData, setTideData] = useState({
     labels: [],
@@ -137,7 +138,7 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
   return (
     <View style={styles.container}>
       {nearestTideStations && nearestTideStations.length > 0 && (
-          <DropdownOptions nearbyStations={nearestTideStations} fetchTideData={fetchTideData} />
+          <DropdownMenu nearbyStations={nearestTideStations} fetchTideData={fetchTideData} setStationName={setStationName} />
       )}
 
       {loading && tideData ? (
@@ -146,6 +147,9 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
         </View>
       ) : (
         <View style={styles.chartContainer}>
+          <View style={styles.legendContainer}>
+            <Text style={styles.legendText}>{stationName}</Text>
+          </View>
           <LineChart
             data={tideData}
             width={Dimensions.get('window').width * 1.05}
@@ -230,5 +234,15 @@ const styles = StyleSheet.create({
   chart: {
     marginLeft: -5,
     paddingTop: 12,
+  },
+  legendContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center', // Center the legend text
+  },
+  legendText: {
+    fontSize: 16,
+    color: 'white',
   },
 });

@@ -34,7 +34,6 @@ const ForecastSearch = ({
         onSubmitEditing={handleSubmit}
         accessibilityLabel="Search for a city or zip code"
       />
-      <Button title="Search" onPress={handleSubmit} />
     </View>
   );
 };
@@ -53,6 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "95%",
     maxWidth: 700,
+    fontSize: 15,
   },
 });
 
