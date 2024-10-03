@@ -5,16 +5,16 @@ import {
   View,
   ActivityIndicator,
   StyleSheet,
-  Pressable,
-  Text,
+  // Pressable,
+  // Text,
 } from 'react-native';
 import axios from 'axios';
 import moment from 'moment';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
+// import DateTimePicker, {
+//   DateTimePickerEvent,
+// } from '@react-native-community/datetimepicker';
 
-import { WeatherProps } from "./Main";
+import DropdownOptions from './utils/DropdownOptions';
 
 export default function TideGraph({ coordinates }: { coordinates: number[] }): React.JSX.Element {
   /*****************************************************************/
@@ -25,7 +25,7 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [allTideStations, setAllTideStations] = useState();
-  const [nearestTideStations, setNearestTideStations] = useState();
+  const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
 
   const [tideData, setTideData] = useState({
     labels: [],
@@ -56,38 +56,27 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
       });
     }
   
-    const getTide = async () => {
+    const getTide = async (lat: number, lon: number) => {
       try {
         const response = await axios.get(
           `https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions&units=english`
         );
         // console.log("ALL STATIONS", response.data.stations.length, "LAT && LONG", lat, lon);
         console.log("FIRST STATION", response.data.stations[0]);
+        const nearbyStations = filterStationsByRadius(response.data.stations, lat, lon, 50);
+        
+        console.log("NEARBY BY STATION ID", nearbyStations[0].id);
+
+        setNearestTideStations(nearbyStations);
         setAllTideStations(response.data.stations);
+        fetchTideData(nearbyStations[0].id);
       } catch (error: any) {
         console.log(error);
-      } finally {
-        // console.log("CALL FETCH TIDE DATA");
-        // fetchTideData(lat, lon);
       }
     };
     
 
-    const fetchTideData = async (lat: number, lon: number) => {
-      console.log("FETCH TIDE DATA WAS CALLED LAT && LONG", lat, lon);
-      if (!allTideStations) return;
-      const nearbyStations = filterStationsByRadius(allTideStations, lat, lon, 50);
-      console.log("NEARBY BY STATIONS", nearbyStations.length);
-      
-      if (nearbyStations.length === 0) {
-        console.error("No nearby stations found for the given location.");
-        return;
-      }
-      
-      console.log("NEARBY BY STATION ID", nearbyStations[0].id);
-      setNearestTideStations(nearbyStations);
-      const station = nearbyStations[0].id;
-      
+    const fetchTideData = async (station: string) => {
       try {
         setLoading(true);
         const response = await axios.get(
@@ -119,14 +108,16 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
   // }, [startDate, endDate]);
   
   useEffect(() => {
-    getTide();
-  }, []);
-  
-  useEffect(() => {
-    if (!allTideStations) return;
     const [lat, lon] = coordinates;
-    fetchTideData(lat, lon);
-  }, [coordinates, allTideStations]);
+    getTide(lat, lon);
+  }, [coordinates]);
+  
+  // useEffect(() => {
+  //   // console.log("ERROR ???????", nearestTideStations);
+  //   if (!nearestTideStations.length) return;
+  //   const station = nearestTideStations[0].id;
+  //   fetchTideData(station);
+  // }, [coordinates, nearestTideStations]);
 
   // const onStartDateChange = (
   //   event: DateTimePickerEvent,
@@ -145,43 +136,11 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }): R
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.dateContainer}>
-        <Text style={styles.locationText}>{location}</Text>
-        <Pressable
-          style={styles.button}
-          onPress={() => setShowStartDatePicker(true)}
-        >
-          <Text style={styles.btnText}>Start Date</Text>
-        </Pressable>
-        {showStartDatePicker && (
-          <DateTimePicker
-            testID="dateTimePickerStart"
-            value={startDate}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={onStartDateChange}
-          />
-        )}
+      {nearestTideStations && nearestTideStations.length > 0 && (
+          <DropdownOptions nearbyStations={nearestTideStations} fetchTideData={fetchTideData} />
+      )}
 
-        <Pressable
-          style={styles.button}
-          onPress={() => setShowEndDatePicker(true)}
-        >
-          <Text style={styles.btnText}>End Date</Text>
-        </Pressable>
-        {showEndDatePicker && (
-          <DateTimePicker
-            testID="dateTimePickerEnd"
-            value={endDate}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={onEndDateChange}
-          />
-        )}
-      </View> */}
-      {loading ? (
+      {loading && tideData ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#3a92da" />
         </View>

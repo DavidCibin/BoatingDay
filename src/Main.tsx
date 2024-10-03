@@ -13,7 +13,7 @@ import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
 
 export interface WeatherProps {
-    position: Location.LocationObject;  // Using LocationObject from expo-location
+    position: Location.LocationObject; // Using LocationObject from expo-location
 }
 
 export default function Main({ position }: WeatherProps): JSX.Element {
@@ -32,65 +32,69 @@ export default function Main({ position }: WeatherProps): JSX.Element {
     /*****************************************************************/
     /* Data Fetching */
 
-
     // Fetch by location (city or zip code). ONLY WHEN USER SEARCHES!!
-    const fetchByLocationHandler = (location: string | number) => {
-        axios
-            .get(
-                 `https://nominatim.openstreetmap.org/search?q=${location}&format=json&addressdetails=1&limit=1`
-            )
-            .then(function (response) {
-                console.log("Google response BY CITY or ZIPCODE", response.data[0]);
-                // TODO: Handle if no data is returned (wrong adress or something like that)
-                const data = response.data[0].address;
-                const local = `${data.city ? data.city : data.village}, ${data.county ? data.county : data.district}, ${data.state}`;
-                setLocation(local);
-                setCoordinates([response.data[0].lat, response.data[0].lon]);
-                getWeather(data.postcode);
-            })
-            .catch(function (error: any) {
-                console.error(error);
-            });
-    };
-    
-    //fetch lat long by postal code/zip since OpenWeather Api only accepts zips
-    const fetchByGeolocationHandler = (lat: number, lon: number) => {
-        axios
-            .get(
-                 `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
-            )
-            .then(function (response) {
-                // console.log(`https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`, response.data);
-                const data = response.data.features[0].properties
-                const location = `${data.geocoding.city}, ${data.geocoding.county ? data.geocoding.county : data.geocoding.district}, ${data.geocoding.state}`;
-                setLocation(location);
-                getWeather([lat, lon]);
-                setCoordinates([lat, lon]);
-            })
-            .catch(function (error: any) {
-                console.error(error);
-            });
+    const fetchByLocationHandler = async (location: string | number) => {
+        try {
+            const response = await axios.get(
+                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&addressdetails=1&limit=1`
+            );
+            console.log("Google response BY CITY or ZIPCODE", response.data[0]);
+
+            if (response.data.length === 0) {
+                console.error("No data returned for this location");
+                return; // Handle case where no data is returned
+            }
+
+            const data = response.data[0].address;
+            const local = `${data.city ? data.city : data.village}, ${
+                data.county ? data.county : data.district
+            }, ${data.state}`;
+            setLocation(local);
+            setCoordinates([response.data[0].lat, response.data[0].lon]);
+            await getWeather(data.postcode); // Assuming getWeather is also async
+        } catch (error) {
+            console.error("fetchByLocationHandler", error);
+        }
     };
 
-    const getWeather = (params: number | number[]) => {
+    // Fetch lat long by postal code/zip since OpenWeather Api only accepts zips
+    const fetchByGeolocationHandler = async (lat: number, lon: number) => {
+        try {
+            const response = await axios.get(
+                `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
+            );
+            const data = response.data.features[0].properties;
+            const location = `${data.geocoding.city}, ${
+                data.geocoding.county
+                    ? data.geocoding.county
+                    : data.geocoding.district
+            }, ${data.geocoding.state}`;
+            console.log("LOCATION", location);
+
+            setLocation(location);
+            await getWeather([lat, lon]); // Assuming getWeather is also async
+            setCoordinates([lat, lon]);
+        } catch (error) {
+            console.error("fetchByGeolocationHandler", error);
+        }
+    };
+
+    const getWeather = async (params: number | number[]) => {
         let q: string = "";
         if (typeof params === "number") {
             q = `zip=${params}`;
         } else {
             q = `lat=${params[0]}&lon=${params[1]}`;
         }
-        axios
-            .get(
+        try {
+            const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${weatherKey}`
-            )
-            .then(function (response) {
-                console.log("WEATHER RESPONSE", response.data);
-                const data = response.data;
-                setTodaysWeather(data);
-            })
-            .catch(function (error: any) {
-                console.log(error);
-            });
+            );
+            console.log("WEATHER RESPONSE", response.data);
+            setTodaysWeather(response.data);
+        } catch (error) {
+            console.log("Error fetching weather data", error);
+        }
     };
 
     /*****************************************************************/
@@ -113,9 +117,7 @@ export default function Main({ position }: WeatherProps): JSX.Element {
                         setLocation={setLocation}
                         fetchByLocationHandler={fetchByLocationHandler}
                     />
-                    <CurrentForecast
-                        currentWeather={weather}
-                    />
+                    <CurrentForecast currentWeather={weather} />
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
@@ -123,7 +125,7 @@ export default function Main({ position }: WeatherProps): JSX.Element {
             )}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
