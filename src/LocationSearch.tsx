@@ -25,7 +25,6 @@ const LocationSearch = ({
     /*****************************************************************/
     /* Functions */
     const handleSubmit = () => {
-        console.log("SEARCH VALUE: ", searchValue);
         setLocation(searchValue);
         fetchByLocationHandler(searchValue);
     };

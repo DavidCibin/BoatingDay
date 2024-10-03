@@ -36,7 +36,6 @@ export default function App(): JSX.Element {
             setIsLoading(false);
             return;
         }
-        console.log("PERMISSION GRANTED");
         try {
             const location = await Location.getCurrentPositionAsync({});
             setPosition(location);

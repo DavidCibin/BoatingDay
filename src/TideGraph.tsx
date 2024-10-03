@@ -57,15 +57,6 @@ export default function TideGraph({
         lon: number,
         radius: number
     ) {
-        console.log(
-            "ALL STATIONS",
-            stations.length,
-            "LAT && LONG",
-            lat,
-            lon,
-            "RADIUS",
-            radius
-        );
         return stations.filter((station: any) => {
             const distance = haversineDistance(
                 lat,
@@ -93,7 +84,7 @@ export default function TideGraph({
             setNearestTideStations(nearbyStations);
             fetchTideData(nearbyStations[0].id);
         } catch (error: any) {
-            console.log(error);
+            console.error("getTide", error);
         }
     };
 
@@ -127,6 +118,7 @@ export default function TideGraph({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
+      if (!coordinates) return;
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
