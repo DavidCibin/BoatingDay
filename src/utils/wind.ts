@@ -1,4 +1,4 @@
-export function getWindDirection(degrees) {
+export function getWindDirection(degrees: number): string {
     if ((degrees >= 348.75 && degrees <= 360) || (degrees >= 0 && degrees < 11.25)) { return "⇧ N" }
     if (degrees >= 11.25 && degrees < 33.75) { return "⬀ NE" }
     if (degrees >= 33.75 && degrees < 56.25) { return "⬀ NE" }
@@ -15,4 +15,5 @@ export function getWindDirection(degrees) {
     if (degrees >= 281.25 && degrees < 303.75) { return "⬁ NW" }
     if (degrees >= 303.75 && degrees < 326.25) { return "⬁ NW" }
     if (degrees >= 326.25 && degrees < 348.75) { return "⬁ NW" }
+    return "";
 }
