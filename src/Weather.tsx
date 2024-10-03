@@ -3,15 +3,27 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
 
 
-interface CurrentWeather {
+export interface WeatherProps {
     name: string;
     weather: { icon: string; description: string }[];
-    main: { temp: number; feels_like: number; temp_min: number; temp_max: number; humidity: number };
+    main: {
+        temp: number;
+        feels_like: number;
+        temp_min: number;
+        temp_max: number;
+        humidity: number;
+    };
     wind: { speed: number; deg: number };
 }
 
-export default function CurrentForecast({ currentWeather }: { currentWeather: CurrentWeather }): JSX.Element {
-    if (!Object.keys(currentWeather).length) {
+export default function CurrentForecast({
+    currentWeather,
+}: {
+    currentWeather: WeatherProps;
+}): JSX.Element {
+    /*****************************************************************/
+    /* Render */
+    if (!currentWeather) {
         return (
             <View>
                 <Text>Loading...</Text>
@@ -20,7 +32,13 @@ export default function CurrentForecast({ currentWeather }: { currentWeather: Cu
     }
     return (
         <View style={styles.currentView}>
-            <Text style={styles.city}>{currentWeather.name}</Text>
+            <Text
+                style={styles.city}
+                accessible={true}
+                accessibilityLabel={`City name: ${currentWeather.name}`}
+            >
+                {currentWeather.name}
+            </Text>
             <View style={styles.mainInfoContainer}>
                 <View style={styles.currentTempView}>
                     <Image
@@ -82,38 +100,40 @@ export default function CurrentForecast({ currentWeather }: { currentWeather: Cu
             </View>
         </View>
     );
-};
+}
 
+/*****************************************************************/
+/* Styles */
 const styles = StyleSheet.create({
     currentView: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
     },
     currentTempView: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
     },
     mainInfoContainer: {
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
     },
     description: {
-        color: 'white',
+        color: "white",
         fontSize: 15,
-        textTransform: 'capitalize',
+        textTransform: "capitalize",
     },
     secondaryInfoContainer: {
-        backgroundColor: '#2a4c6d',
+        backgroundColor: "#2a4c6d",
         borderRadius: 20,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         margin: 20,
-        width: '95%',
+        width: "95%",
         maxWidth: 478,
     },
     weatherIcon: {
@@ -121,41 +141,40 @@ const styles = StyleSheet.create({
         height: 50,
     },
     city: {
-        color: 'white',
-        justifyContent: 'center',
+        color: "white",
+        justifyContent: "center",
         marginTop: 10,
         fontSize: 15,
     },
     currentDegrees: {
-        color: 'white',
-        justifyContent: 'center',
+        color: "white",
+        justifyContent: "center",
         marginTop: 10,
         fontSize: 60,
     },
     row: {
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-between',
-        color: 'white',
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "space-between",
+        color: "white",
         padding: 10,
     },
     detailsBox: {
-        display: 'flex',
-        width: '33.3%',
+        display: "flex",
+        width: "33.3%",
         paddingLeft: 20,
     },
     label: {
-        color: 'white',
+        color: "white",
         fontSize: 12,
     },
     details: {
-        color: 'white',
+        color: "white",
         fontSize: 22,
     },
     wind: {
-        color: 'white',
+        color: "white",
         fontSize: 24,
     },
 });
-
