@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Boating-Day",
-    "slug": "Boating-Day",
+    "name": "BoatingDay",
+    "slug": "BoatingDay",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

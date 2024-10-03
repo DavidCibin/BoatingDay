@@ -118,7 +118,7 @@ export default function TideGraph({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-      if (!coordinates) return;
+      if (!coordinates.length) return;
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
