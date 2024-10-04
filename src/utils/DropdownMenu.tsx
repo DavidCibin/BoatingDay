@@ -102,7 +102,7 @@ const DropdownMenu = ({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 30,
+        paddingVertical: 25,
         paddingHorizontal: 10,
         width: "100%",
     },
@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        height: 50,
+        height: 40,
         backgroundColor: "white",
-        padding: 15,
+        paddingHorizontal: 15,
         borderRadius: 10,
         maxWidth: 700,
     },

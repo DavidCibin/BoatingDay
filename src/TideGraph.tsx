@@ -106,7 +106,8 @@ export default function TideGraph({
             const data = predictions.map((prediction: any) =>
                 parseFloat(prediction.v)
             );
-
+            console.log("Tide Data:", { labels, data });
+            
             setTideData({ labels, datasets: [{ data }] });
         } catch (error: any) {
             console.error("Error fetching tide data:", error.message);
@@ -123,6 +124,8 @@ export default function TideGraph({
         getTide(lat, lon);
     }, [coordinates]);
 
+    console.log("Tide Data:", tideData, "Label len", tideData.labels.length);
+    
     /*****************************************************************/
     /* Render */
     return (
@@ -135,7 +138,7 @@ export default function TideGraph({
                 />
             )}
 
-            {loading && tideData ? (
+            {!tideData.labels.length ? (
                 <View style={styles.loaderContainer}>
                     <ActivityIndicator size="large" color="#3a92da" />
                 </View>

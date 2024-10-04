@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        margin: 20,
+        margin: 18,
         width: "95%",
         maxWidth: 478,
     },
@@ -143,14 +143,14 @@ const styles = StyleSheet.create({
     city: {
         color: "white",
         justifyContent: "center",
-        marginTop: 10,
+        marginTop: 6,
         fontSize: 15,
     },
     currentDegrees: {
         color: "white",
         justifyContent: "center",
-        marginTop: 10,
-        fontSize: 60,
+        marginTop: 5,
+        fontSize: 50,
     },
     row: {
         display: "flex",

@@ -51,13 +51,13 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 35,
+        marginTop: 30,
     },
     searchCity: {
-        height: 50,
+        height: 40,
         margin: 12,
         backgroundColor: "white",
-        padding: 15,
+        paddingLeft: 12,
         borderRadius: 10,
         width: "95%",
         maxWidth: 700,
