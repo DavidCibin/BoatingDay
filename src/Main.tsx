@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ImageBackground, View, Text, StyleSheet } from "react-native";
+import { ImageBackground, View, Text, StyleSheet, ScrollView } from "react-native";
 import axios from "axios";
+import WaveAnimation from "./WaveAnimation";
 import Weather, { WeatherProps } from "./Weather";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
@@ -8,9 +9,10 @@ import * as Location from "expo-location";
 
 export interface LocationProps {
     position: Location.LocationObject;
+    getGeolocation: () => void;
 }
 
-export default function Main({ position }: LocationProps): JSX.Element {
+export default function Main({ position, getGeolocation }: LocationProps): JSX.Element {
     /*****************************************************************/
     /* State */
     const [location, setLocation] = useState<string>("");
@@ -35,9 +37,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
             }
 
             const data = response.data[0].address;
-            const local = `${data.city ? data.city : data.village}, ${
-                data.county ? data.county : data.district
-            }, ${data.state}`;
+            const local = `${data.city ? data.city : data.village}, ${data.state}`;
             setLocation(local);
             setCoordinates([response.data[0].lat, response.data[0].lon]);
             await getWeather(data.postcode);
@@ -52,11 +52,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
                 `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
             );
             const data = response.data.features[0].properties;
-            const location = `${data.geocoding.city}, ${
-                data.geocoding.county
-                    ? data.geocoding.county
-                    : data.geocoding.district
-            }, ${data.geocoding.state}`;
+            const location = `${data.geocoding.city}, ${data.geocoding.state}`;
 
             setLocation(location);
             await getWeather([lat, lon]);
@@ -101,12 +97,21 @@ export default function Main({ position }: LocationProps): JSX.Element {
                         location={location}
                         setLocation={setLocation}
                         fetchByLocationHandler={fetchByLocationHandler}
+                        getGeolocation={getGeolocation}
                     />
-                    <Weather currentWeather={weather} />
+                    <Weather 
+                        currentWeather={weather}
+                        location={location}
+                    />
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
-                <Text style={styles.noWeather}>No Weather to show</Text>
+                <ScrollView
+                    contentInsetAdjustmentBehavior="automatic"
+                    style={styles.views}
+                >
+                    <WaveAnimation />
+                </ScrollView>
             )}
         </View>
     );
@@ -140,5 +145,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    views: {
+        backgroundColor: "#172f46",
     },
 });

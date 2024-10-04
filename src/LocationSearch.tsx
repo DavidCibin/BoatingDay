@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, StyleSheet, Button } from "react-native";
+import { View, TextInput, StyleSheet, Text } from "react-native";
 
 interface LocationSearchProps {
     location: string;
     setLocation: (location: string) => void;
     fetchByLocationHandler: (location: string) => void;
+    getGeolocation: () => void;
 }
 
 const LocationSearch = ({
     location,
     setLocation,
     fetchByLocationHandler,
+    getGeolocation,
 }: LocationSearchProps) => {
     /*****************************************************************/
     /* State */
@@ -41,6 +43,10 @@ const LocationSearch = ({
                 onSubmitEditing={handleSubmit}
                 accessibilityLabel="Search for a city or zip code"
             />
+            <Text 
+                style={styles.icon}
+                onPress={getGeolocation}
+            >➣</Text>
         </View>
     );
 };
@@ -49,9 +55,17 @@ const LocationSearch = ({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
+        display: "flex",
         justifyContent: "center",
         alignItems: "center",
         marginTop: 30,
+        flexDirection: "row",
+    },
+    icon: {
+        transform: [{ rotate: "-45deg" }],
+        position: "absolute",
+        right: 25,
+        fontSize: 15,
     },
     searchCity: {
         height: 40,
@@ -62,6 +76,7 @@ const styles = StyleSheet.create({
         width: "95%",
         maxWidth: 700,
         fontSize: 15,
+        position: "relative",
     },
 });
 

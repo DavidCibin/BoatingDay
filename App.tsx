@@ -87,7 +87,7 @@ export default function App(): JSX.Element {
                     >
                         {/* <GeoLocation setLoading={setIsLoading} /> */}
                         {position ? (
-                            <Main position={position} />
+                            <Main position={position} getGeolocation={getGeolocation} />
                         ) : (
                             <Text>Waiting for location...</Text>
                         )}

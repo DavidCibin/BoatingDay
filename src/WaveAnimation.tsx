@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Dimensions} from 'react-native';
 import LottieView from 'lottie-react-native';
-import waveAnimation from '../assets/json/wave.json';
+import waveAnimation from '../assets/json/dark-waves.json';
 
 const {width, height} = Dimensions.get('window');
 const animationSize = 1; // Adjust this percentage as needed

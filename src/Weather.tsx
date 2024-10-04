@@ -18,12 +18,16 @@ export interface WeatherProps {
 
 export default function CurrentForecast({
     currentWeather,
+    location,
 }: {
     currentWeather: WeatherProps;
+    location: string;
 }): JSX.Element {
+    // console.log(location);
+    
     /*****************************************************************/
     /* Render */
-    if (!currentWeather) {
+    if (!currentWeather && !location) {
         return (
             <View>
                 <Text>Loading...</Text>
@@ -35,15 +39,15 @@ export default function CurrentForecast({
             <Text
                 style={styles.city}
                 accessible={true}
-                accessibilityLabel={`City name: ${currentWeather.name}`}
+                accessibilityLabel={`City name: ${location}`}
             >
-                {currentWeather.name}
+                {location.split(",")[0]}
             </Text>
             <View style={styles.mainInfoContainer}>
                 <View style={styles.currentTempView}>
                     <Image
                         source={{
-                            uri: `http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`,
+                            uri: `https://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`,
                         }}
                         style={styles.weatherIcon}
                         resizeMode={"contain"}
@@ -87,7 +91,7 @@ export default function CurrentForecast({
                     <View style={styles.detailsBox}>
                         <Text style={styles.label}>Wind</Text>
                         <Text style={styles.details}>
-                            {currentWeather.wind.speed} mph
+                            {currentWeather.wind.speed.toFixed(1)}mph
                         </Text>
                     </View>
                     <View style={styles.detailsBox}>
@@ -171,10 +175,10 @@ const styles = StyleSheet.create({
     },
     details: {
         color: "white",
-        fontSize: 22,
+        fontSize: 20,
     },
     wind: {
         color: "white",
-        fontSize: 24,
+        fontSize: 20,
     },
 });
