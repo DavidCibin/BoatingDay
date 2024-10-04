@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ImageBackground, View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+    ImageBackground,
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+} from "react-native";
 import axios from "axios";
 import WaveAnimation from "./WaveAnimation";
 import Weather, { WeatherProps } from "./Weather";
@@ -12,7 +18,10 @@ export interface LocationProps {
     getGeolocation: () => void;
 }
 
-export default function Main({ position, getGeolocation }: LocationProps): JSX.Element {
+export default function Main({
+    position,
+    getGeolocation,
+}: LocationProps): JSX.Element {
     /*****************************************************************/
     /* State */
     const [location, setLocation] = useState<string>("");
@@ -33,14 +42,30 @@ export default function Main({ position, getGeolocation }: LocationProps): JSX.E
 
             if (response.data.length === 0) {
                 console.error("No data returned for this location");
-                return; 
+                return;
             }
 
-            const data = response.data[0].address;
-            const local = `${data.city ? data.city : data.village}, ${data.state}`;
+            const result = response.data[0];
+            const address = result.address || {};
+
+            const local = `${
+                address.city || address.village || "Unknown city"
+            }, ${address.state || "Unknown state"}`;
             setLocation(local);
-            setCoordinates([response.data[0].lat, response.data[0].lon]);
-            await getWeather(data.postcode);
+
+            const lat = result.lat || null;
+            const lon = result.lon || null;
+            if (lat && lon) {
+                setCoordinates([lat, lon]);
+            } else {
+                console.error("Coordinates not found");
+            }
+
+            if (address.postcode) {
+                await getWeather(address.postcode);
+            } else {
+                await fetchByGeolocationHandler(lat, lon);
+            }
         } catch (error) {
             console.error("fetchByLocationHandler", error);
         }
@@ -99,10 +124,7 @@ export default function Main({ position, getGeolocation }: LocationProps): JSX.E
                         fetchByLocationHandler={fetchByLocationHandler}
                         getGeolocation={getGeolocation}
                     />
-                    <Weather 
-                        currentWeather={weather}
-                        location={location}
-                    />
+                    <Weather currentWeather={weather} location={location} />
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
