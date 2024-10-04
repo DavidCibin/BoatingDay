@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
 
-
 export interface WeatherProps {
     name: string;
     weather: { icon: string; description: string }[];
@@ -23,8 +22,6 @@ export default function CurrentForecast({
     currentWeather: WeatherProps;
     location: string;
 }): JSX.Element {
-    // console.log(location);
-    
     /*****************************************************************/
     /* Render */
     if (!currentWeather && !location) {

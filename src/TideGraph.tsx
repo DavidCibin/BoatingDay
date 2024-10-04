@@ -106,7 +106,7 @@ export default function TideGraph({
             const data = predictions.map((prediction: any) =>
                 parseFloat(prediction.v)
             );
-            
+
             setTideData({ labels, datasets: [{ data }] });
         } catch (error: any) {
             console.error("Error fetching tide data:", error.message);
@@ -118,11 +118,11 @@ export default function TideGraph({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-      if (!coordinates.length) return;
+        if (!coordinates.length) return;
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
-    
+
     /*****************************************************************/
     /* Render */
     return (

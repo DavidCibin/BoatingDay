@@ -43,10 +43,9 @@ const LocationSearch = ({
                 onSubmitEditing={handleSubmit}
                 accessibilityLabel="Search for a city or zip code"
             />
-            <Text 
-                style={styles.icon}
-                onPress={getGeolocation}
-            >➣</Text>
+            <Text style={styles.icon} onPress={getGeolocation}>
+                ➣
+            </Text>
         </View>
     );
 };
