@@ -75,7 +75,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
         }
         try {
             const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${process.env.EXPO_PUBLIC_WEATHER_API_KEY}`
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=a0623b11ae5b6d63b28da3564cdd91c7`
             );
             setTodaysWeather(response.data);
         } catch (error) {
