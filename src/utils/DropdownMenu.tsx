@@ -43,6 +43,7 @@ const DropdownMenu = ({
     /* Effects */
     useEffect(() => {
         setStationName(nearbyStations[0].name);
+        setSelectedStationId(nearbyStations[0].id);
     }, [nearbyStations]);
 
     /*****************************************************************/
