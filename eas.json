@@ -9,9 +9,6 @@
       "distribution": "internal"
     },
     "preview": {
-      "env": {
-        "EXPO_PUBLIC_WEATHER_API_KEY": "a0623b11ae5b6d63b28da3564cdd91c7"
-      },
       "distribution": "internal",
       "android": {
         "buildType": "apk"
