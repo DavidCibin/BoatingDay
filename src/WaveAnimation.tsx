@@ -16,7 +16,7 @@ const WaveAnimation = () => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#3a92da',
+        backgroundColor: '#172f46',
       }}>
       <LottieView
         source={waveAnimation}
