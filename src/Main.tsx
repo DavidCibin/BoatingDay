@@ -5,7 +5,6 @@ import Weather, { WeatherProps } from "./Weather";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
-import { WEATHER_API_KEY } from '@env';
 
 export interface LocationProps {
     position: Location.LocationObject;
@@ -76,7 +75,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
         }
         try {
             const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${WEATHER_API_KEY}`
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=${process.env.EXPO_PUBLIC_WEATHER_API_KEY}`
             );
             setTodaysWeather(response.data);
         } catch (error) {
