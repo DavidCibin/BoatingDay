@@ -5,6 +5,7 @@ import Weather, { WeatherProps } from "./Weather";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
+import { WEATHER_API_KEY } from '@env';
 
 export interface LocationProps {
     position: Location.LocationObject;
@@ -20,7 +21,7 @@ export default function Main({ position }: LocationProps): JSX.Element {
     /*****************************************************************/
     /* Constants */
     const bgImg = { uri: "../assets/images/4.png" };
-    const WEATHER_API_KEY = "a0623b11ae5b6d63b28da3564cdd91c7";
+    // const WEATHER_API_KEY = "a0623b11ae5b6d63b28da3564cdd91c7";
 
     /*****************************************************************/
     /* Data Fetching */

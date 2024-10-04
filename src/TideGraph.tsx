@@ -106,7 +106,6 @@ export default function TideGraph({
             const data = predictions.map((prediction: any) =>
                 parseFloat(prediction.v)
             );
-            console.log("Tide Data:", { labels, data });
             
             setTideData({ labels, datasets: [{ data }] });
         } catch (error: any) {
@@ -123,8 +122,6 @@ export default function TideGraph({
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
-
-    console.log("Tide Data:", tideData, "Label len", tideData.labels.length);
     
     /*****************************************************************/
     /* Render */
