@@ -1,4 +1,5 @@
-# BoatingDay
+# BoatingDay! <img src="https://github.com/user-attachments/assets/228b2fa1-f00c-4d51-bf3a-dd455712cf6a" alt="app icon" width="50" style="margin-bottom: -10px">
+
 
 ## Overview
 **BoatingDay** is a mobile app that helps users stay informed about the current weather and ocean tides based on their location. Whether you're planning a day out on the water or need up-to-date tidal data for a specific coastal area, BoatingDay offers a simple and user-friendly solution to access this information quickly.
