@@ -23,6 +23,7 @@ There are no required API keys or environment variables needed for running the a
 ## Usage Instructions
 - On launch, the app automatically detects your location and fetches the current weather and tidal information.
 - You can manually search for a location by entering a city name (e.g., "Boston, MA").
+- To fetch data for your current location, simply tap the location icon ![image](https://github.com/user-attachments/assets/d1a9f0f0-907a-44cb-bd7a-eb433f1fc4d3) to retrieve real-time weather and tide information.
 - View high/low tide points, represented in both time and feet, on a tide graph. 
 - Switch between nearby tide stations within a 50km radius for detailed local tide information.
 
@@ -30,7 +31,9 @@ There are no required API keys or environment variables needed for running the a
 Feel free to submit issues or pull requests to improve the app. We're always open to contributions that can enhance the user experience or optimize the app's performance.
 
 ## Screenshots
-![Screenshot_20241008_112215_Expo Go](https://github.com/user-attachments/assets/ee695691-649e-43f7-9178-eda7b28bad73)
-![Screenshot_20241008_105820_Expo Go](https://github.com/user-attachments/assets/75f6f5a9-35e3-4750-912c-6aabb76a60b9)
-![Screenshot_20241008_105845_Expo Go](https://github.com/user-attachments/assets/f9743338-b010-4b39-a786-cce7cd3c2e30)
-
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/user-attachments/assets/cf73cbde-1479-4aee-bd08-09f769b4ac9e" alt="Screenshot_20241008_113513_Expo Go" width="24%">
+    <img src="https://github.com/user-attachments/assets/ee695691-649e-43f7-9178-eda7b28bad73" alt="Screenshot_20241008_112215_Expo Go" width="24%">
+    <img src="https://github.com/user-attachments/assets/75f6f5a9-35e3-4750-912c-6aabb76a60b9" alt="Screenshot_20241008_105820_Expo Go" width="24%">
+    <img src="https://github.com/user-attachments/assets/f9743338-b010-4b39-a786-cce7cd3c2e30" alt="Screenshot_20241008_105845_Expo Go" width="24%">
+</div>
