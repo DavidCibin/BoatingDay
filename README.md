@@ -31,7 +31,7 @@ There are no required API keys or environment variables needed for running the a
 ## Download
 The user can download the BoatingDay app for Android by following the link below:
 
-- [Download BoatingDay APK](#) *(https://www.davidcibin.com/misc/BoatingDay.apk)*
+- [Download BoatingDay APK](https://www.davidcibin.com/misc/BoatingDay.apk)
 
 ### Installation Instructions for Android
 1. Download the APK file from the link above.
