@@ -28,6 +28,17 @@ There are no required API keys or environment variables needed for running the a
 - View high/low tide points, represented in both time and feet, on a tide graph. 
 - Switch between nearby tide stations within a 50km radius for detailed local tide information.
 
+## Download
+The user can download the BoatingDay app for Android by following the link below:
+
+- [Download BoatingDay APK](#) *(https://www.davidcibin.com/misc/BoatingDay.apk)*
+
+### Installation Instructions for Android
+1. Download the APK file from the link above.
+2. Before installing, ensure that you have allowed installations from unknown sources in your device's settings. This can usually be found in `Settings > Security > Unknown Sources`.
+3. Locate the downloaded APK file using your file manager and tap on it to begin the installation.
+4. Follow the prompts to complete the installation.
+
 ## Contribution Guidelines
 Feel free to submit issues or pull requests to improve the app. We're always open to contributions that can enhance the user experience or optimize the app's performance.
 
