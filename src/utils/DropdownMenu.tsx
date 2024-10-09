@@ -33,8 +33,9 @@ const DropdownMenu = ({
 
     /*****************************************************************/
     /* Functions */
-    const handleSelectStation = (stationId: string) => {
+    const handleSelectStation = (stationId: string, stationName: string) => {
         setSelectedStationId(stationId);
+        setStationName(stationName);
         fetchTideData(stationId);
         setIsOpen(false);
     };
@@ -77,7 +78,7 @@ const DropdownMenu = ({
                                     <TouchableOpacity
                                         style={styles.item}
                                         onPress={() =>
-                                            handleSelectStation(item.id)
+                                            handleSelectStation(item.id, item.name)
                                         }
                                     >
                                         <Text style={styles.itemCheckmark}>

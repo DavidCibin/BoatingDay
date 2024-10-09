@@ -5,11 +5,12 @@ import {
     View,
     ActivityIndicator,
     StyleSheet,
-    Text,
+    Text as RNText,
 } from "react-native";
 import axios from "axios";
 import moment from "moment";
 
+import Svg, { Line, Rect, Text as SvgText } from "react-native-svg";
 import DropdownMenu from "./utils/DropdownMenu";
 
 export default function TideGraph({
@@ -22,10 +23,15 @@ export default function TideGraph({
     const [loading, setLoading] = useState(true);
     const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
     const [stationName, setStationName] = useState<string>("");
+    const [tideTimes, setTideTimes] = useState<string[]>([]);
     const [tideData, setTideData] = useState({
         labels: [],
         datasets: [{ data: [] }],
     });
+
+    /*****************************************************************/
+    /* Variables */
+    let previousX = 0;
 
     /*****************************************************************/
     /* Helper Functions */
@@ -68,6 +74,33 @@ export default function TideGraph({
         });
     }
 
+    function findTimeIndexesAndPercentage() {
+        const currentTime = new Date();        
+    
+        let closestBeforeIndex = -1;
+        let closestAfterIndex = -1;
+    
+        for (let i = 0; i < tideTimes.length; i++) {
+            const time = new Date(tideTimes[i]);
+            if (time < currentTime) {
+                closestBeforeIndex = i;
+            } else if (time > currentTime && closestAfterIndex === -1) {
+                closestAfterIndex = i;
+            }
+        }
+    
+        let positionPercentage = 0;
+        if (closestBeforeIndex !== -1 && closestAfterIndex !== -1) {
+            const beforeTime = new Date(tideTimes[closestBeforeIndex]);
+            const afterTime = new Date(tideTimes[closestAfterIndex]);
+            positionPercentage = (Number(currentTime) - Number(beforeTime)) / (Number(afterTime) - Number(beforeTime));
+        }
+    
+        return { closestAfterIndex, positionPercentage };
+    }
+    
+    const { closestAfterIndex, positionPercentage } = findTimeIndexesAndPercentage();
+
     /*****************************************************************/
     /* Data Fetching */
     const getTide = async (lat: number, lon: number) => {
@@ -103,10 +136,16 @@ export default function TideGraph({
             const labels = predictions.map((prediction: any) =>
                 moment(prediction.t).format("hh:mmA")
             );
+            
+            const times = predictions.map((prediction: any) =>
+                moment(prediction.t)
+            );
+            
             const data = predictions.map((prediction: any) =>
                 parseFloat(prediction.v)
             );
-
+            
+            setTideTimes(times);
             setTideData({ labels, datasets: [{ data }] });
         } catch (error: any) {
             console.error("Error fetching tide data:", error.message);
@@ -122,6 +161,9 @@ export default function TideGraph({
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
+    useEffect(() => {
+        findTimeIndexesAndPercentage();
+    }, [tideTimes]);
 
     /*****************************************************************/
     /* Render */
@@ -135,14 +177,14 @@ export default function TideGraph({
                 />
             )}
 
-            {!tideData.labels.length ? (
+            {loading ? (
                 <View style={styles.loaderContainer}>
                     <ActivityIndicator size="large" color="#3a92da" />
                 </View>
             ) : (
                 <View style={styles.chartContainer}>
                     <View style={styles.legendContainer}>
-                        <Text style={styles.legendText}>{stationName}</Text>
+                        <RNText style={styles.legendText}>{stationName}</RNText>
                     </View>
                     <LineChart
                         data={tideData}
@@ -168,6 +210,51 @@ export default function TideGraph({
                             },
                         }}
                         bezier
+                        renderDotContent={({ x, y, index }) => {
+                            if (index === closestAfterIndex) {
+                                const position = previousX + (x - previousX) * positionPercentage;
+                                return (
+                                    <Svg
+                                        key={x + y}
+                                        height="100%"
+                                        width="100%"
+                                        style={{
+                                            position: "absolute",
+                                            left: position,
+                                        }}
+                                    >
+                                        <Line
+                                            x1={position}
+                                            y1={0}
+                                            x2={position}
+                                            y2={185}
+                                            stroke="#ccc"
+                                            strokeWidth={2}
+                                        />
+                                        <Rect
+                                            x={position - 33}
+                                            y={80}
+                                            width="66"
+                                            height="19"
+                                            fill="#45576a"
+                                            rx="5"
+                                            ry="5"
+                                        />
+                                        <SvgText
+                                            x={position}
+                                            y={90}
+                                            fill="white"
+                                            fontSize="12"
+                                            textAnchor="middle"
+                                            alignmentBaseline="middle"
+                                        >
+                                            {moment().format("hh:mmA")}
+                                        </SvgText>
+                                    </Svg>
+                                );
+                            }
+                            previousX = x;
+                        }}
                         style={styles.chart}
                     />
                 </View>
@@ -184,6 +271,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flex: 1,
     },
+    currentTimeIndicator: {
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+    },
+    verticalLine: {
+        position: "absolute",
+        width: 2,
+        height: "100%",
+        backgroundColor: "red",
+        marginLeft: -5,
+    },
     loaderContainer: {
         flex: 1,
         justifyContent: "center",
@@ -195,10 +294,12 @@ const styles = StyleSheet.create({
         padding: 10,
         overflow: "hidden",
         width: "95%",
+        position: "relative",
     },
     chart: {
-        marginLeft: -5,
+        marginLeft: -15,
         paddingTop: 12,
+        position: "relative",
     },
     legendContainer: {
         width: "100%",
