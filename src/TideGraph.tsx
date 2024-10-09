@@ -28,6 +28,10 @@ export default function TideGraph({
         labels: [],
         datasets: [{ data: [] }],
     });
+    const [currentTimeData, setCurrentTimeData] = useState({
+        closestAfterIndex: 0,
+        positionPercentage: 0,
+    });
 
     /*****************************************************************/
     /* Variables */
@@ -75,11 +79,11 @@ export default function TideGraph({
     }
 
     function findTimeIndexesAndPercentage() {
-        const currentTime = new Date();        
-    
+        const currentTime = new Date();
+
         let closestBeforeIndex = -1;
         let closestAfterIndex = -1;
-    
+
         for (let i = 0; i < tideTimes.length; i++) {
             const time = new Date(tideTimes[i]);
             if (time < currentTime) {
@@ -88,18 +92,18 @@ export default function TideGraph({
                 closestAfterIndex = i;
             }
         }
-    
+
         let positionPercentage = 0;
         if (closestBeforeIndex !== -1 && closestAfterIndex !== -1) {
             const beforeTime = new Date(tideTimes[closestBeforeIndex]);
             const afterTime = new Date(tideTimes[closestAfterIndex]);
-            positionPercentage = (Number(currentTime) - Number(beforeTime)) / (Number(afterTime) - Number(beforeTime));
+            positionPercentage =
+                (Number(currentTime) - Number(beforeTime)) /
+                (Number(afterTime) - Number(beforeTime));
         }
-    
-        return { closestAfterIndex, positionPercentage };
+
+        return setCurrentTimeData({ closestAfterIndex, positionPercentage });
     }
-    
-    const { closestAfterIndex, positionPercentage } = findTimeIndexesAndPercentage();
 
     /*****************************************************************/
     /* Data Fetching */
@@ -136,15 +140,15 @@ export default function TideGraph({
             const labels = predictions.map((prediction: any) =>
                 moment(prediction.t).format("hh:mmA")
             );
-            
+
             const times = predictions.map((prediction: any) =>
                 moment(prediction.t)
             );
-            
+
             const data = predictions.map((prediction: any) =>
                 parseFloat(prediction.v)
             );
-            
+
             setTideTimes(times);
             setTideData({ labels, datasets: [{ data }] });
         } catch (error: any) {
@@ -211,8 +215,11 @@ export default function TideGraph({
                         }}
                         bezier
                         renderDotContent={({ x, y, index }) => {
-                            if (index === closestAfterIndex) {
-                                const position = previousX + (x - previousX) * positionPercentage;
+                            if (index === currentTimeData.closestAfterIndex) {
+                                const position =
+                                    previousX +
+                                    (x - previousX) *
+                                        currentTimeData.positionPercentage;
                                 return (
                                     <Svg
                                         key={x + y}
