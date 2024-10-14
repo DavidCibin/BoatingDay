@@ -44,8 +44,8 @@ Feel free to submit issues or pull requests to improve the app. We're always ope
 
 ## Screenshots
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/user-attachments/assets/cf73cbde-1479-4aee-bd08-09f769b4ac9e" alt="Screenshot_20241008_113513_Expo Go" width="24%">
-    <img src="https://github.com/user-attachments/assets/ee695691-649e-43f7-9178-eda7b28bad73" alt="Screenshot_20241008_112215_Expo Go" width="24%">
-    <img src="https://github.com/user-attachments/assets/75f6f5a9-35e3-4750-912c-6aabb76a60b9" alt="Screenshot_20241008_105820_Expo Go" width="24%">
-    <img src="https://github.com/user-attachments/assets/f9743338-b010-4b39-a786-cce7cd3c2e30" alt="Screenshot_20241008_105845_Expo Go" width="24%">
+    <img src="https://github.com/user-attachments/assets/7f2daa4a-9dee-4597-942b-ddc26abf8ec3" alt="Permission" width="24%">
+    <img src="https://github.com/user-attachments/assets/8176689a-ee5a-4cc4-b920-37be25b9c6ee" alt="Loading" width="24%">
+    <img src="https://github.com/user-attachments/assets/23c2703e-755e-4859-ac24-3641b6643fe0" alt="Stations" width="24%">
+    <img src="https://github.com/user-attachments/assets/0387c0e6-e967-4e45-bd6d-41c2c921e104" alt="Main" width="24%">
 </div>
