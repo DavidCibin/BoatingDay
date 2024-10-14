@@ -37,7 +37,7 @@ export default function Main({
     const fetchByLocationHandler = async (location: string | number) => {
         try {
             const response = await axios.get(
-                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&addressdetails=1&limit=1`
+                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&&accept-language=en&countrycodes=us&limit=1`
             );
 
             if (response.data.length === 0) {
@@ -47,14 +47,15 @@ export default function Main({
 
             const result = response.data[0];
             const address = result.address || {};
-
             const local = `${
                 address.city || address.village || "Unknown city"
             }, ${address.state || "Unknown state"}`;
+            
             setLocation(local);
 
             const lat = result.lat || null;
             const lon = result.lon || null;
+            
             if (lat && lon) {
                 setCoordinates([lat, lon]);
             } else {
@@ -76,6 +77,7 @@ export default function Main({
             const response = await axios.get(
                 `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
             );
+
             const data = response.data.features[0].properties;
             const location = `${data.geocoding.city}, ${data.geocoding.state}`;
 
