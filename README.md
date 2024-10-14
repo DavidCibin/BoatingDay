@@ -39,6 +39,10 @@ The user can download the BoatingDay app for Android by following the link below
 3. Locate the downloaded APK file using your file manager and tap on it to begin the installation.
 4. Follow the prompts to complete the installation.
 
+## Demo
+[iOS](https://appetize.io/app/ios/com.davidcibin.BoatingDay?device=iphone15promax&osVersion=17.2)
+[Android](https://appetize.io/app/b_gibcmy2s3xzu2c4ggkuuez67pq?device=pixel8pro&osVersion=14.0)
+
 ## Contribution Guidelines
 Feel free to submit issues or pull requests to improve the app. We're always open to contributions that can enhance the user experience or optimize the app's performance.
 
