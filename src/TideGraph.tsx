@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import LineChart from "react-native-chart-kit/dist/line-chart";
 import {
     Dimensions,
     View,
     ActivityIndicator,
     StyleSheet,
+    LayoutChangeEvent,
     Text as RNText,
 } from "react-native";
 import axios from "axios";
@@ -20,6 +21,7 @@ export default function TideGraph({
 }): React.JSX.Element {
     /*****************************************************************/
     /* State */
+    const [height, setHeight] = useState(30);
     const [loading, setLoading] = useState(true);
     const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
     const [stationName, setStationName] = useState<string>("");
@@ -36,9 +38,15 @@ export default function TideGraph({
     /*****************************************************************/
     /* Variables */
     let previousX = 0;
+    const elementRef = useRef<View>(null);
 
     /*****************************************************************/
     /* Helper Functions */
+    const handleLayout = (event: LayoutChangeEvent) => {
+        const { height } = event.nativeEvent.layout;
+        setHeight(height);
+    };
+
     // Function to calculate the distance between two points using the Haversine formula
     function haversineDistance(
         lat1: number,
@@ -182,11 +190,15 @@ export default function TideGraph({
             )}
 
             {loading ? (
-                <View style={styles.loaderContainer}>
+                <View style={[{height: height}, styles.loaderContainer]}>
                     <ActivityIndicator size="large" color="#3a92da" />
                 </View>
             ) : (
-                <View style={styles.chartContainer}>
+                <View 
+                    style={styles.chartContainer}
+                    ref={elementRef} 
+                    onLayout={handleLayout}
+                >
                     <View style={styles.legendContainer}>
                         <RNText style={styles.legendText}>{stationName}</RNText>
                     </View>
@@ -274,7 +286,7 @@ export default function TideGraph({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "center",
+        justifyContent: "space-evenly",
         alignItems: "center",
         flex: 1,
     },
@@ -294,6 +306,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "red",
     },
     chartContainer: {
         backgroundColor: "#2a4c6d",

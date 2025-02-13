@@ -21,7 +21,9 @@ const LocationSearch = ({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-        setSearchValue(location);
+        if (!location.includes("Unknown")) {
+            setSearchValue(location);
+        }
     }, [location]);
 
     /*****************************************************************/

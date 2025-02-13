@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
 
@@ -23,8 +23,20 @@ export default function CurrentForecast({
     location: string;
 }): JSX.Element {
     /*****************************************************************/
+    /* State */
+    const [currentLocation, setCurrentLocation] = useState("");
+
+    /*****************************************************************/
+    /* Effects */
+    useEffect(() => {
+            if (!location.includes("Unknown")) {
+                setCurrentLocation(location);
+            }
+        }, [location]);
+
+    /*****************************************************************/
     /* Render */
-    if (!currentWeather && !location) {
+    if (!currentWeather && !currentLocation) {
         return (
             <View>
                 <Text>Loading...</Text>
@@ -36,9 +48,9 @@ export default function CurrentForecast({
             <Text
                 style={styles.city}
                 accessible={true}
-                accessibilityLabel={`City name: ${location}`}
+                accessibilityLabel={`City name: ${currentLocation}`}
             >
-                {location.split(",")[0]}
+                {currentLocation.split(",")[0]}
             </Text>
             <View style={styles.mainInfoContainer}>
                 <View style={styles.currentTempView}>
@@ -107,9 +119,10 @@ export default function CurrentForecast({
 /* Styles */
 const styles = StyleSheet.create({
     currentView: {
-        display: "flex",
+        flex: 1,
+        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-around",
         width: "100%",
     },
     currentTempView: {

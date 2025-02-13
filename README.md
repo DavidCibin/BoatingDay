@@ -53,3 +53,11 @@ Feel free to submit issues or pull requests to improve the app. We're always ope
     <img src="https://github.com/user-attachments/assets/23c2703e-755e-4859-ac24-3641b6643fe0" alt="Stations" width="24%">
     <img src="https://github.com/user-attachments/assets/0387c0e6-e967-4e45-bd6d-41c2c921e104" alt="Main" width="24%">
 </div>
+
+## Changelog
+** Version 1.0.1
+The NOAA API parameter for dates, MM/DD/YYYY, has been eliminated. The app now uses YYYY-MM-DD.
+
+** Version 1.0.2
+Prevent Unkown locations to be displayed.
+Flex layout is now used.

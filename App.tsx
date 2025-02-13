@@ -67,21 +67,15 @@ export default function App(): JSX.Element {
                 backgroundColor={backgroundStyle.backgroundColor}
             />
             {isLoading ? (
-                <ScrollView
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={styles.views}
-                >
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <WaveAnimation />
                 </ScrollView>
             ) : (
-                <ScrollView
-                    contentInsetAdjustmentBehavior="automatic"
-                    style={styles.views}
-                >
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <View
                         style={{
                             flex: 1,
-                            justifyContent: "center",
+                            justifyContent: "space-around",
                             alignItems: "center",
                         }}
                     >
@@ -108,10 +102,14 @@ export default function App(): JSX.Element {
 }
 
 const styles = StyleSheet.create({
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'space-evenly',
+        flexDirection: 'column',
+    },
     container: {
         flex: 1,
         width: "100%",
-        height: "100%",
     },
     views: {
         backgroundColor: "#172f46",

@@ -147,11 +147,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: "100%",
-        height: "100%",
     },
     imageBackground: {
         width: "100%",
-        height: "100%",
+        flex: 1,
     },
     scrollView: {
         flex: 1,
