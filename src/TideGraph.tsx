@@ -132,7 +132,7 @@ export default function TideGraph({
                 `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=NOS.COOPS.TAC.WL&datum=MLLW&begin_date=${moment(
                     new Date()
                 ).format(
-                    "MM/DD/YYYY"
+                    "YYYY-MM-DD"
                 )}&range=30&interval=hilo&units=english&time_zone=lst_ldt&format=json&station=${station}`
             );
 
