@@ -1,4 +1,6 @@
 {
+  "author": "David Cibin",
+  "homepage": "www.davidcibin.com",
   "name": "boating-day",
   "version": "1.0.1",
   "main": "expo/AppEntry.js",
