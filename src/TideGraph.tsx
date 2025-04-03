@@ -289,7 +289,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-evenly",
         alignItems: "center",
         flex: 1,
-        paddingBottom: 10,
     },
     currentTimeIndicator: {
         position: "absolute",

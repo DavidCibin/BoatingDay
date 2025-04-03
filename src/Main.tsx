@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: "100%",
+        marginBottom: 10,
     },
     imageBackground: {
         width: "100%",
