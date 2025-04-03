@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         height: 40,
-        backgroundColor: "aliceblue",
+        backgroundColor: "#ECEFF2",
         paddingHorizontal: 15,
         borderRadius: 10,
         maxWidth: 700,

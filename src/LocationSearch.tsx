@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     searchCity: {
         height: 40,
         margin: 12,
-        backgroundColor: "aliceblue",
+        backgroundColor: "#ECEFF2",
         paddingLeft: 12,
         borderRadius: 10,
         width: "95%",
