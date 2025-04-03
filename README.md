@@ -61,3 +61,6 @@ The NOAA API parameter for dates, MM/DD/YYYY, has been eliminated. The app now u
 ** Version 1.0.2
 Prevent Unkown locations to be displayed.
 Flex layout is now used.
+
+** Version 1.2.0
+New App Layout
