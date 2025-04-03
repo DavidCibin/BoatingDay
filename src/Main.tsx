@@ -8,7 +8,9 @@ import {
 } from "react-native";
 import axios from "axios";
 import WaveAnimation from "./WaveAnimation";
-import Weather, { WeatherProps } from "./Weather";
+import WeatherBottom from "./WeatherBottom";
+import WeatherTop from "./WeatherTop";
+import { WeatherProps } from "./utils/WeatherProps";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
@@ -120,13 +122,14 @@ export default function Main({
         <View style={styles.container}>
             {weather && location ? (
                 <ImageBackground source={bgImg} style={styles.imageBackground}>
+                    <WeatherTop currentWeather={weather} location={location} />
                     <LocationSearch
                         location={location}
                         setLocation={setLocation}
                         fetchByLocationHandler={fetchByLocationHandler}
                         getGeolocation={getGeolocation}
                     />
-                    <Weather currentWeather={weather} location={location} />
+                    <WeatherBottom currentWeather={weather} location={location} />
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (

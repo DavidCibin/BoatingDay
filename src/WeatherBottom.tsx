@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
+import { WeatherProps } from "./utils/WeatherProps";
 
-export interface WeatherProps {
-    name: string;
-    weather: { icon: string; description: string }[];
-    main: {
-        temp: number;
-        feels_like: number;
-        temp_min: number;
-        temp_max: number;
-        humidity: number;
-    };
-    wind: { speed: number; deg: number };
-}
 
-export default function CurrentForecast({
+export default function CurrentForecastWidget({
     currentWeather,
     location,
 }: {
@@ -45,30 +34,6 @@ export default function CurrentForecast({
     }
     return (
         <View style={styles.currentView}>
-            <Text
-                style={styles.city}
-                accessible={true}
-                accessibilityLabel={`City name: ${currentLocation}`}
-            >
-                {currentLocation.split(",")[0]}
-            </Text>
-            <View style={styles.mainInfoContainer}>
-                <View style={styles.currentTempView}>
-                    <Image
-                        source={{
-                            uri: `https://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`,
-                        }}
-                        style={styles.weatherIcon}
-                        resizeMode={"contain"}
-                    />
-                    <Text style={styles.currentDegrees}>
-                        {Math.round(currentWeather.main.temp)}°F
-                    </Text>
-                </View>
-                <Text style={styles.description}>
-                    {currentWeather.weather[0].description}
-                </Text>
-            </View>
             <View style={styles.secondaryInfoContainer}>
                 <View style={styles.row}>
                     <View style={styles.detailsBox}>
@@ -125,46 +90,18 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
         width: "100%",
     },
-    currentTempView: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    mainInfoContainer: {
-        display: "flex",
-        alignItems: "center",
-    },
-    description: {
-        color: "white",
-        fontSize: 15,
-        textTransform: "capitalize",
-    },
     secondaryInfoContainer: {
         backgroundColor: "#2a4c6d",
         borderRadius: 20,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        margin: 18,
+        margin: 7,
+        marginLeft: 18,
+        marginRight: 18,
+        marginBottom: 18,
         width: "95%",
         maxWidth: 478,
-    },
-    weatherIcon: {
-        width: 50,
-        height: 50,
-    },
-    city: {
-        color: "white",
-        justifyContent: "center",
-        marginTop: 6,
-        fontSize: 15,
-    },
-    currentDegrees: {
-        color: "white",
-        justifyContent: "center",
-        marginTop: 5,
-        fontSize: 50,
     },
     row: {
         display: "flex",
