@@ -2,7 +2,7 @@
   "author": "David Cibin",
   "homepage": "www.davidcibin.com",
   "name": "BoatingDay",
-  "version": "1.0.2",
+  "version": "1.2.0",
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
