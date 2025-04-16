@@ -55,7 +55,7 @@ const DropdownMenu = ({
                 style={styles.dropdown}
                 onPress={() => setIsOpen(!isOpen)}
             >
-                <Text style={styles.dropdownText}>Select a nearby station</Text>
+                <Text style={styles.dropdownText}>Select Station</Text>
                 <Text style={styles.dropdownArrow}>▼</Text>
             </TouchableOpacity>
 

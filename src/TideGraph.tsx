@@ -16,8 +16,10 @@ import DropdownMenu from "./utils/DropdownMenu";
 
 export default function TideGraph({
     coordinates,
+    tideDate,
 }: {
     coordinates: number[];
+    tideDate: Date;
 }): React.JSX.Element {
     /*****************************************************************/
     /* State */
@@ -25,6 +27,7 @@ export default function TideGraph({
     const [loading, setLoading] = useState(true);
     const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
     const [stationName, setStationName] = useState<string>("");
+    const [currentStationId, setCurrentStationId] = useState<string>("");
     const [tideTimes, setTideTimes] = useState<string[]>([]);
     const [tideData, setTideData] = useState({
         labels: [],
@@ -128,6 +131,8 @@ export default function TideGraph({
             );
             setNearestTideStations(nearbyStations);
             fetchTideData(nearbyStations[0].id);
+            console.log("currentstation id getTide", currentStationId, "nearbyStations[0].id", nearbyStations[0].id);
+            setCurrentStationId(nearbyStations[0].id);
         } catch (error: any) {
             console.error("getTide", error);
         }
@@ -136,9 +141,10 @@ export default function TideGraph({
     const fetchTideData = async (station: string) => {
         try {
             setLoading(true);
+            console.log("new Date()", new Date());
             const response = await axios.get(
                 `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=NOS.COOPS.TAC.WL&datum=MLLW&begin_date=${moment(
-                    new Date()
+                    tideDate
                 ).format(
                     "YYYY-MM-DD"
                 )}&range=30&interval=hilo&units=english&time_zone=lst_ldt&format=json&station=${station}`
@@ -169,10 +175,22 @@ export default function TideGraph({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
+        console.log("coordinates in tidegraph 1", coordinates);
+        console.log("tideDate in tidegraph", tideDate);
+        
         if (!coordinates.length) return;
         const [lat, lon] = coordinates;
         getTide(lat, lon);
     }, [coordinates]);
+    
+    useEffect(() => {
+        if (currentStationId) {
+            fetchTideData(currentStationId);
+        }
+        console.log("coordinates in tidegraph 2", coordinates);
+        console.log("station id useeffect", currentStationId);
+    }, [tideDate]);
+
     useEffect(() => {
         findTimeIndexesAndPercentage();
     }, [tideTimes]);
@@ -199,8 +217,9 @@ export default function TideGraph({
                     ref={elementRef} 
                     onLayout={handleLayout}
                 >
-                    <View style={styles.legendContainer}>
-                        <RNText style={styles.legendText}>{stationName}</RNText>
+                    <View style={styles.topContainer}>
+                        <RNText style={styles.legendText}>{stationName}--</RNText>
+                        <RNText style={styles.legendText}>{stationName}--</RNText>
                     </View>
                     <LineChart
                         data={tideData}
@@ -227,11 +246,18 @@ export default function TideGraph({
                         }}
                         bezier
                         renderDotContent={({ x, y, index }) => {
-                            if (index === currentTimeData.closestAfterIndex) {
-                                const position =
-                                    previousX +
-                                    (x - previousX) *
-                                        currentTimeData.positionPercentage;
+                            const position =
+                            previousX +
+                            (x - previousX) *
+                            currentTimeData.positionPercentage;
+                            console.log("position", position);
+                            console.log(position ? 100 : 200);
+
+                            if (position && index === currentTimeData.closestAfterIndex) {
+                                console.log("HELLO", index,  currentTimeData);
+                                console.log("HELLO", tideDate);
+                                
+                                        
                                 return (
                                     <Svg
                                         key={x + y}
@@ -239,7 +265,7 @@ export default function TideGraph({
                                         width="100%"
                                         style={{
                                             position: "absolute",
-                                            left: position,
+                                            left: position ? 155 : 155,
                                         }}
                                     >
                                         <Line
@@ -320,11 +346,13 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         position: "relative",
     },
-    legendContainer: {
+    topContainer: {
         width: "100%",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        flexWrap: "nowrap",
+        backgroundColor: "#ccc",
     },
     legendText: {
         fontSize: 16,
