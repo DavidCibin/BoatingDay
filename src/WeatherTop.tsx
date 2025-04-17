@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { WeatherProps } from "./utils/WeatherProps";
 
-
+/*****************************************************************/
+/* CurrentForecast Component */
 export default function CurrentForecast({
     currentWeather,
     location,
@@ -17,10 +18,10 @@ export default function CurrentForecast({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-            if (!location.includes("Unknown")) {
-                setCurrentLocation(location);
-            }
-        }, [location]);
+        if (!location.includes("Unknown")) {
+            setCurrentLocation(location);
+        }
+    }, [location]);
 
     /*****************************************************************/
     /* Render */
@@ -98,5 +99,5 @@ const styles = StyleSheet.create({
         color: "white",
         justifyContent: "center",
         fontSize: 60,
-    }
+    },
 });
