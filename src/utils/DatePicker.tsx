@@ -19,19 +19,27 @@ interface DatePickerProps {
     setTideDate: (tideDate: Date) => void;
 }
 
-const DatePickerText = ({ tideDate, setTideDate }: DatePickerProps) => {
-    const [showPicker, setShowPicker] = useState(false);
-    const [tempDate, setTempDate] = useState(tideDate);
-    const fadeAnim = useRef(new Animated.Value(0)).current;
+interface OnChangeEvent {
+    event: DateTimePickerEvent;
+    selectedDate?: Date;
+}
 
-    const minDate = new Date(
+export default function DatePickerText({
+    tideDate,
+    setTideDate,
+}: DatePickerProps): React.JSX.Element {
+    const [showPicker, setShowPicker] = useState<boolean>(false);
+    const [tempDate, setTempDate] = useState<Date>(tideDate);
+    const fadeAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
+
+    const minDate: Date = new Date(
         new Date().setFullYear(new Date().getFullYear() - 1)
     );
-    const maxDate = new Date(
+    const maxDate: Date = new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
     );
 
-    const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    const onChange = ({ event, selectedDate }: OnChangeEvent) => {
         if (selectedDate) {
             setTempDate(selectedDate);
         }
@@ -43,12 +51,12 @@ const DatePickerText = ({ tideDate, setTideDate }: DatePickerProps) => {
         }
     };
 
-    const confirmIOSDate = () => {
+    const confirmIOSDate = (): void => {
         setTideDate(tempDate);
         setShowPicker(false);
     };
 
-    const showPickerWithFade = () => {
+    const showPickerWithFade = (): void => {
         setTempDate(tideDate); // preload with current value
         setShowPicker(true);
         Animated.timing(fadeAnim, {
@@ -99,7 +107,9 @@ const DatePickerText = ({ tideDate, setTideDate }: DatePickerProps) => {
                                 value={tempDate}
                                 mode="date"
                                 display="spinner"
-                                onChange={onChange}
+                                onChange={(event, selectedDate) =>
+                                    onChange({ event, selectedDate })
+                                }
                                 minimumDate={minDate}
                                 maximumDate={maxDate}
                             />
@@ -119,7 +129,9 @@ const DatePickerText = ({ tideDate, setTideDate }: DatePickerProps) => {
                             value={tempDate}
                             mode="date"
                             display="default"
-                            onChange={onChange}
+                            onChange={(event, selectedDate) =>
+                                onChange({ event, selectedDate })
+                            }
                             minimumDate={minDate}
                             maximumDate={maxDate}
                         />
@@ -128,7 +140,7 @@ const DatePickerText = ({ tideDate, setTideDate }: DatePickerProps) => {
             )}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -175,5 +187,3 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-
-export default DatePickerText;
