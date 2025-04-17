@@ -72,13 +72,11 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     currentTempView: {
-        display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
     },
     mainInfoContainer: {
-        display: "flex",
         alignItems: "center",
     },
     description: {

@@ -124,13 +124,15 @@ export default function Main({
             {weather && location ? (
                 <ImageBackground source={bgImg} style={styles.imageBackground}>
                     <WeatherTop currentWeather={weather} location={location} />
-                    <LocationSearch
-                        location={location}
-                        setLocation={setLocation}
-                        fetchByLocationHandler={fetchByLocationHandler}
-                        getGeolocation={getGeolocation}
-                    />
-                    <WeatherBottom currentWeather={weather} location={location} />
+                    <View style={styles.locationAndWeatherContainer}>
+                        <LocationSearch
+                            location={location}
+                            setLocation={setLocation}
+                            fetchByLocationHandler={fetchByLocationHandler}
+                            getGeolocation={getGeolocation}
+                        />
+                        <WeatherBottom currentWeather={weather} location={location} />
+                        </View>
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
@@ -150,24 +152,28 @@ export default function Main({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: "space-evenly",
         width: "100%",
-        marginBottom: 10,
     },
     imageBackground: {
         width: "100%",
         flex: 1,
+        justifyContent: "space-evenly",
     },
     scrollView: {
         flex: 1,
     },
     futureForecastContainer: {
-        display: "flex",
         alignItems: "center",
         justifyContent: "center",
     },
     noWeather: {
         textAlign: "center",
         color: "white",
+    },
+    locationAndWeatherContainer: {
+        flex: 1,
+        flexDirection: "column",
     },
     locationContainer: {
         flex: 1,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     FlatList,
     Modal,
+    Animated,
 } from "react-native";
 
 interface Station {
@@ -30,6 +31,7 @@ const DropdownMenu = ({
     const [selectedStationId, setSelectedStationId] = useState<string | null>(
         nearbyStations[0].id
     );
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
     /*****************************************************************/
     /* Functions */
@@ -40,12 +42,23 @@ const DropdownMenu = ({
         setIsOpen(false);
     };
 
-    /*****************************************************************/
-    /* Effects */
+    const handleOpen = () => {
+        setIsOpen(true);
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+    };
+
     useEffect(() => {
         setStationName(nearbyStations[0].name);
         setSelectedStationId(nearbyStations[0].id);
     }, [nearbyStations]);
+
+    useEffect(() => {
+        if (!isOpen) fadeAnim.setValue(0); // Reset on close
+    }, [isOpen]);
 
     /*****************************************************************/
     /* Render */
@@ -53,7 +66,8 @@ const DropdownMenu = ({
         <View style={styles.container}>
             <TouchableOpacity
                 style={styles.dropdown}
-                onPress={() => setIsOpen(!isOpen)}
+                onPress={handleOpen}
+                accessibilityLabel="Open station dropdown"
             >
                 <Text style={styles.dropdownText}>Select Station</Text>
                 <Text style={styles.dropdownArrow}>▼</Text>
@@ -68,9 +82,10 @@ const DropdownMenu = ({
                 >
                     <TouchableOpacity
                         style={styles.modalOverlay}
+                        activeOpacity={1}
                         onPress={() => setIsOpen(false)}
                     >
-                        <View style={styles.modalContainer}>
+                        <Animated.View style={[styles.modalContainer, { opacity: fadeAnim }]}>
                             <FlatList
                                 data={nearbyStations}
                                 keyExtractor={(item) => item.id}
@@ -82,17 +97,13 @@ const DropdownMenu = ({
                                         }
                                     >
                                         <Text style={styles.itemCheckmark}>
-                                            {item.id === selectedStationId
-                                                ? "✔"
-                                                : ""}
+                                            {item.id === selectedStationId ? "✔" : ""}
                                         </Text>
-                                        <Text style={styles.itemText}>
-                                            {item.name}
-                                        </Text>
+                                        <Text style={styles.itemText}>{item.name}</Text>
                                     </TouchableOpacity>
                                 )}
                             />
-                        </View>
+                        </Animated.View>
                     </TouchableOpacity>
                 </Modal>
             )}
@@ -104,18 +115,17 @@ const DropdownMenu = ({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
     },
     dropdown: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        height: 40,
+        maxHeight: 40,
         backgroundColor: "#ECEFF2",
         paddingHorizontal: 15,
         borderRadius: 10,
-        flex: 1
-        
+        flex: 1,
     },
     dropdownText: {
         fontSize: 15,
@@ -139,7 +149,6 @@ const styles = StyleSheet.create({
         maxHeight: "60%",
     },
     item: {
-        display: "flex",
         flexDirection: "row",
         alignItems: "center",
         padding: 8,

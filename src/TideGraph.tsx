@@ -215,10 +215,7 @@ export default function TideGraph({
                 >
                     <View style={styles.topContainer}>
                         <RNText style={styles.legendText}>
-                            {stationName}--
-                        </RNText>
-                        <RNText style={styles.legendText}>
-                            {stationName}--
+                            {stationName}
                         </RNText>
                     </View>
                     <LineChart
@@ -309,9 +306,9 @@ export default function TideGraph({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "space-evenly",
+        // justifyContent: "space-evenly",
         alignItems: "center",
-        flex: 1,
+        flexGrow: 1,
     },
     dropdownAndDateContainer: {
         flexDirection: "row",
@@ -319,6 +316,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         width: "100%",
         justifyContent: "space-between",
+        alignItems: "center",
+        flex: 1,
+        maxHeight: 80, 
     },
     verticalLine: {
         position: "absolute",
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     },
     topContainer: {
         width: "100%",
-        display: "flex",
+        // display: "flex",
         flexDirection: "row",
         justifyContent: "space-around",
         flexWrap: "nowrap",

@@ -84,27 +84,19 @@ export default function CurrentForecastWidget({
 /* Styles */
 const styles = StyleSheet.create({
     currentView: {
-        flex: 1,
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-around",
-        width: "100%",
     },
     secondaryInfoContainer: {
         backgroundColor: "#2a4c6d",
         borderRadius: 20,
-        display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        margin: 7,
-        marginLeft: 18,
-        marginRight: 18,
-        marginBottom: 18,
         width: "95%",
         maxWidth: 478,
     },
     row: {
-        display: "flex",
         flexDirection: "row",
         width: "100%",
         justifyContent: "space-between",
@@ -112,7 +104,6 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     detailsBox: {
-        display: "flex",
         width: "33.3%",
         paddingLeft: 20,
     },

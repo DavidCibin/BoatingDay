@@ -61,7 +61,7 @@ export default function App(): JSX.Element {
     /*****************************************************************/
     /* Render */
     return isPermissionGranted ? (
-        <SafeAreaView style={[styles.views, styles.container]}>
+        <SafeAreaView style={styles.container}>
             <StatusBar
                 barStyle={isDarkMode ? "dark-content" : "light-content"}
                 backgroundColor={backgroundStyle.backgroundColor}
@@ -75,8 +75,6 @@ export default function App(): JSX.Element {
                     <View
                         style={{
                             flex: 1,
-                            justifyContent: "space-around",
-                            alignItems: "center",
                         }}
                     >
                         {/* <GeoLocation setLoading={setIsLoading} /> */}
@@ -93,7 +91,7 @@ export default function App(): JSX.Element {
             )}
         </SafeAreaView>
     ) : (
-        <SafeAreaView style={[styles.views, styles.container]}>
+        <SafeAreaView style={styles.container}>
             <Text>{errorMsg}</Text>
             <Text>Please, allow location access to continue</Text>
             <Button title="Try Again" onPress={getGeolocation} />
@@ -110,8 +108,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: "100%",
-    },
-    views: {
         backgroundColor: "#172f46",
+        paddingTop: 10,
+        paddingBottom: 10,
     },
 });
