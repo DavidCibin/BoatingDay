@@ -15,7 +15,7 @@ import moment from "moment";
 import Svg, { Path } from "react-native-svg";
 
 /*****************************************************************/
-/* Interfaces */
+/* Types */
 interface DatePickerProps {
     tideDate: Date;
     setTideDate: (tideDate: Date) => void;

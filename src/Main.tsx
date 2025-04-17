@@ -15,11 +15,15 @@ import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
 
-export interface LocationProps {
+/*****************************************************************/
+/* Types */
+interface LocationProps {
     position: Location.LocationObject;
     getGeolocation: () => void;
 }
 
+/*****************************************************************/
+/* Main Component */
 export default function Main({
     position,
     getGeolocation,
@@ -29,7 +33,6 @@ export default function Main({
     const [location, setLocation] = useState<string>("");
     const [weather, setTodaysWeather] = useState<WeatherProps>();
     const [coordinates, setCoordinates] = useState<number[]>([]);
-    
 
     /*****************************************************************/
     /* Constants */
@@ -53,12 +56,12 @@ export default function Main({
             const local = `${
                 address.city || address.village || "Unknown city"
             }, ${address.state || "Unknown state"}`;
-            
+
             setLocation(local);
 
             const lat = result.lat || null;
             const lon = result.lon || null;
-            
+
             if (lat && lon) {
                 setCoordinates([lat, lon]);
             } else {
@@ -131,8 +134,11 @@ export default function Main({
                             fetchByLocationHandler={fetchByLocationHandler}
                             getGeolocation={getGeolocation}
                         />
-                        <WeatherBottom currentWeather={weather} location={location} />
-                        </View>
+                        <WeatherBottom
+                            currentWeather={weather}
+                            location={location}
+                        />
+                    </View>
                     <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
