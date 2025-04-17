@@ -13,6 +13,8 @@ import Main from "./src/Main";
 import WaveAnimation from "./src/WaveAnimation";
 import * as Location from "expo-location";
 
+/*****************************************************************/
+/* App Component */
 export default function App(): JSX.Element {
     /*****************************************************************/
     /* State */
@@ -104,8 +106,8 @@ export default function App(): JSX.Element {
 const styles = StyleSheet.create({
     scrollViewContent: {
         flexGrow: 1,
-        justifyContent: 'space-evenly',
-        flexDirection: 'column',
+        justifyContent: "space-evenly",
+        flexDirection: "column",
     },
     container: {
         flex: 1,
