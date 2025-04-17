@@ -3,7 +3,8 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
 import { WeatherProps } from "./utils/WeatherProps";
 
-
+/*****************************************************************/
+/* CurrentForecastWidget Component */
 export default function CurrentForecastWidget({
     currentWeather,
     location,
@@ -18,10 +19,10 @@ export default function CurrentForecastWidget({
     /*****************************************************************/
     /* Effects */
     useEffect(() => {
-            if (!location.includes("Unknown")) {
-                setCurrentLocation(location);
-            }
-        }, [location]);
+        if (!location.includes("Unknown")) {
+            setCurrentLocation(location);
+        }
+    }, [location]);
 
     /*****************************************************************/
     /* Render */
