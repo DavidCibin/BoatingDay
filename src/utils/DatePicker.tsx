@@ -14,6 +14,8 @@ import DateTimePicker, {
 import moment from "moment";
 import Svg, { Path } from "react-native-svg";
 
+/*****************************************************************/
+/* Interfaces */
 interface DatePickerProps {
     tideDate: Date;
     setTideDate: (tideDate: Date) => void;
@@ -24,14 +26,23 @@ interface OnChangeEvent {
     selectedDate?: Date;
 }
 
+/*****************************************************************/
+/* DatePicker Component */
 export default function DatePickerText({
     tideDate,
     setTideDate,
 }: DatePickerProps): React.JSX.Element {
+    /*****************************************************************/
+    /* State */
     const [showPicker, setShowPicker] = useState<boolean>(false);
     const [tempDate, setTempDate] = useState<Date>(tideDate);
-    const fadeAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
 
+    /*****************************************************************/
+    /* Refs */
+    const fadeAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
+    
+    /*****************************************************************/
+    /* Constants */
     const minDate: Date = new Date(
         new Date().setFullYear(new Date().getFullYear() - 1)
     );
@@ -39,6 +50,8 @@ export default function DatePickerText({
         new Date().setFullYear(new Date().getFullYear() + 1)
     );
 
+    /*****************************************************************/
+    /* Functions */
     const onChange = ({ event, selectedDate }: OnChangeEvent) => {
         if (selectedDate) {
             setTempDate(selectedDate);
@@ -66,12 +79,16 @@ export default function DatePickerText({
         }).start();
     };
 
+    /*****************************************************************/
+    /* Effects */
     useEffect(() => {
         if (!showPicker) {
             fadeAnim.setValue(0);
         }
     }, [showPicker]);
 
+    /*****************************************************************/
+    /* Render */
     return (
         <View style={styles.container}>
             <TouchableOpacity
@@ -142,6 +159,8 @@ export default function DatePickerText({
     );
 }
 
+/*****************************************************************/
+/* Styles */
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",

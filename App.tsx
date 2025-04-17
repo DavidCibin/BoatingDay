@@ -99,6 +99,8 @@ export default function App(): JSX.Element {
     );
 }
 
+/*****************************************************************/
+/* Styles */
 const styles = StyleSheet.create({
     scrollViewContent: {
         flexGrow: 1,

@@ -26,7 +26,7 @@ export default function TideGraph({
     const [loading, setLoading] = useState(true);
     const [nearestTideStations, setNearestTideStations] = useState<any[]>([]);
     const [stationName, setStationName] = useState<string>("");
-    const [currentStationId, setCurrentStationId] = useState<string>("");
+    const [currentStationId, setCurrentStationId] = useState<number>();
     const [tideTimes, setTideTimes] = useState<string[]>([]);
     const [tideDate, setTideDate] = useState(new Date());
     const [tideData, setTideData] = useState({
@@ -39,12 +39,12 @@ export default function TideGraph({
     });
 
     /*****************************************************************/
-    /* Variables */
+    /* Constants */
     let previousX = 0;
     const elementRef = useRef<View>(null);
 
     /*****************************************************************/
-    /* Helper Functions */
+    /* Functions */
     const handleLayout = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
         setHeight(height);
@@ -119,7 +119,7 @@ export default function TideGraph({
     /*****************************************************************/
     /* Data Fetching */
     const getTide = async (lat: number, lon: number) => {
-        if (!lat && !lon) return
+        if (!lat && !lon) return;
         try {
             const response = await axios.get(
                 `https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions&units=english`
@@ -138,7 +138,7 @@ export default function TideGraph({
         }
     };
 
-    const fetchTideData = async (station: string) => {
+    const fetchTideData = async (station: number) => {
         try {
             setLoading(true);
             const response = await axios.get(
@@ -179,7 +179,7 @@ export default function TideGraph({
     }, [coordinates]);
 
     useEffect(() => {
-        if (currentStationId ) {
+        if (currentStationId) {
             fetchTideData(currentStationId);
         }
     }, [tideDate]);
@@ -198,7 +198,7 @@ export default function TideGraph({
                         nearbyStations={nearestTideStations}
                         fetchTideData={fetchTideData}
                         setStationName={setStationName}
-                        />
+                    />
                     <DatePicker tideDate={tideDate} setTideDate={setTideDate} />
                 </View>
             )}
@@ -214,9 +214,7 @@ export default function TideGraph({
                     onLayout={handleLayout}
                 >
                     <View style={styles.topContainer}>
-                        <RNText style={styles.legendText}>
-                            {stationName}
-                        </RNText>
+                        <RNText style={styles.legendText}>{stationName}</RNText>
                     </View>
                     <LineChart
                         data={tideData}
@@ -318,7 +316,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         flex: 1,
-        maxHeight: 80, 
+        maxHeight: 80,
     },
     verticalLine: {
         position: "absolute",
