@@ -104,12 +104,9 @@ const DropdownMenu = ({
 /* Styles */
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 25,
-        paddingHorizontal: 10,
-        width: "100%",
+        flex: 1
     },
     dropdown: {
-        display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -117,7 +114,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#ECEFF2",
         paddingHorizontal: 15,
         borderRadius: 10,
-        maxWidth: 700,
+        flex: 1
+        
     },
     dropdownText: {
         fontSize: 15,

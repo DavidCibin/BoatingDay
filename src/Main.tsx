@@ -11,7 +11,6 @@ import WaveAnimation from "./WaveAnimation";
 import WeatherBottom from "./WeatherBottom";
 import WeatherTop from "./WeatherTop";
 import { WeatherProps } from "./utils/WeatherProps";
-import DatePicker from "./utils/DatePicker";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 import * as Location from "expo-location";
@@ -30,8 +29,7 @@ export default function Main({
     const [location, setLocation] = useState<string>("");
     const [weather, setTodaysWeather] = useState<WeatherProps>();
     const [coordinates, setCoordinates] = useState<number[]>([]);
-
-    const [tideDate, setTideDate] = useState(new Date());
+    
 
     /*****************************************************************/
     /* Constants */
@@ -117,7 +115,6 @@ export default function Main({
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         fetchByGeolocationHandler(lat, lon);
-        console.log("tideDate", tideDate);
     }, [position]);
 
     /*****************************************************************/
@@ -133,10 +130,8 @@ export default function Main({
                         fetchByLocationHandler={fetchByLocationHandler}
                         getGeolocation={getGeolocation}
                     />
-                    <DatePicker tideDate={tideDate} setTideDate={setTideDate} />
-                    {/* <DatePicker date={date} setDate={setDate} /> */}
                     <WeatherBottom currentWeather={weather} location={location} />
-                    <TideGraph coordinates={coordinates} tideDate={tideDate} />
+                    <TideGraph coordinates={coordinates} />
                 </ImageBackground>
             ) : (
                 <ScrollView
