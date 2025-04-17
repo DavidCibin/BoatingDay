@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { WeatherProps } from "./utils/WeatherProps";
+import WeatherProps from "./utils/WeatherProps";
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* CurrentForecast Component */
 export default function CurrentForecast({
     currentWeather,
@@ -11,11 +15,11 @@ export default function CurrentForecast({
     currentWeather: WeatherProps;
     location: string;
 }): JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [currentLocation, setCurrentLocation] = useState("");
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         if (!location.includes("Unknown")) {
@@ -23,7 +27,7 @@ export default function CurrentForecast({
         }
     }, [location]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     if (!currentWeather && !currentLocation) {
         return (
@@ -36,7 +40,7 @@ export default function CurrentForecast({
         <View style={styles.currentView}>
             <Text
                 style={styles.city}
-                accessible={true}
+                accessible
                 accessibilityLabel={`City name: ${currentLocation}`}
             >
                 {currentLocation.split(",")[0]}
@@ -48,7 +52,7 @@ export default function CurrentForecast({
                             uri: `https://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`,
                         }}
                         style={styles.weatherIcon}
-                        resizeMode={"contain"}
+                        resizeMode="contain"
                     />
                     <Text style={styles.currentDegrees}>
                         {Math.round(currentWeather.main.temp)}°F
@@ -62,42 +66,42 @@ export default function CurrentForecast({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
-    currentView: {
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-around",
-        width: "100%",
+styles = StyleSheet.create({
+    city: {
+        color: "white",
+        fontSize: 14,
+        justifyContent: "center",
+        marginTop: 40,
     },
-    currentTempView: {
-        flexDirection: "row",
-        alignItems: "center",
+    currentDegrees: {
+        color: "white",
+        fontSize: 60,
         justifyContent: "center",
     },
-    mainInfoContainer: {
+    currentTempView: {
         alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    currentView: {
+        alignItems: "center",
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-around",
+        width: "100%",
     },
     description: {
         color: "white",
         fontSize: 14,
         textTransform: "capitalize",
     },
+    mainInfoContainer: {
+        alignItems: "center",
+    },
     weatherIcon: {
-        width: 50,
         height: 50,
-    },
-    city: {
-        color: "white",
-        justifyContent: "center",
-        marginTop: 40,
-        fontSize: 14,
-    },
-    currentDegrees: {
-        color: "white",
-        justifyContent: "center",
-        fontSize: 60,
+        width: 50,
     },
 });

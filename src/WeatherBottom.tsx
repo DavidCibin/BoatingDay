@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { getWindDirection } from "./utils/wind";
 import { WeatherProps } from "./utils/WeatherProps";
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* CurrentForecastWidget Component */
 export default function CurrentForecastWidget({
     currentWeather,
@@ -12,11 +16,11 @@ export default function CurrentForecastWidget({
     currentWeather: WeatherProps;
     location: string;
 }): JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [currentLocation, setCurrentLocation] = useState("");
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         if (!location.includes("Unknown")) {
@@ -24,7 +28,7 @@ export default function CurrentForecastWidget({
         }
     }, [location]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     if (!currentWeather && !currentLocation) {
         return (
@@ -81,40 +85,40 @@ export default function CurrentForecastWidget({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     currentView: {
-        flexDirection: "column",
         alignItems: "center",
+        flexDirection: "column",
         justifyContent: "space-around",
     },
-    secondaryInfoContainer: {
-        backgroundColor: "#2a4c6d",
-        borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "95%",
-        maxWidth: 478,
-    },
-    row: {
-        flexDirection: "row",
-        width: "100%",
-        justifyContent: "space-between",
+    details: {
         color: "white",
-        padding: 10,
+        fontSize: 20,
     },
     detailsBox: {
-        width: "33.3%",
         paddingLeft: 20,
+        width: "33.3%",
     },
     label: {
         color: "white",
         fontSize: 12,
     },
-    details: {
+    row: {
         color: "white",
-        fontSize: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 10,
+        width: "100%",
+    },
+    secondaryInfoContainer: {
+        alignItems: "center",
+        backgroundColor: "#2a4c6d",
+        borderRadius: 20,
+        justifyContent: "center",
+        maxWidth: 478,
+        width: "95%",
     },
     wind: {
         color: "white",

@@ -9,35 +9,38 @@ import {
     Animated,
 } from "react-native";
 
+/** ************************************************************** */
+/* Types */
 interface Station {
     id: number;
     name: string;
 }
-
-/*****************************************************************/
-/* Types */
 interface DropdownProps {
     nearbyStations: Station[];
     fetchTideData: (stationId: number) => void;
     setStationName: (stationName: string) => void;
 }
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* DropdownMenu Component */
 export default function DropdownMenu({
     nearbyStations,
     fetchTideData,
     setStationName,
 }: DropdownProps): React.JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [isOpen, setIsOpen] = useState(false);
     const [selectedStationId, setSelectedStationId] = useState<number>(
-        nearbyStations[0].id
+        nearbyStations[0].id,
     );
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Functions */
     const handleSelectStation = (stationId: number, stationName: string) => {
         setSelectedStationId(stationId);
@@ -55,18 +58,18 @@ export default function DropdownMenu({
         }).start();
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         setStationName(nearbyStations[0].name);
         setSelectedStationId(nearbyStations[0].id);
-    }, [nearbyStations]);
+    }, [nearbyStations, setStationName]);
 
     useEffect(() => {
         if (!isOpen) fadeAnim.setValue(0); // Reset on close
-    }, [isOpen]);
+    }, [fadeAnim, isOpen]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View style={styles.container}>
@@ -81,7 +84,7 @@ export default function DropdownMenu({
 
             {isOpen && (
                 <Modal
-                    transparent={true}
+                    transparent
                     animationType="slide"
                     visible={isOpen}
                     onRequestClose={() => setIsOpen(false)}
@@ -106,7 +109,7 @@ export default function DropdownMenu({
                                         onPress={() =>
                                             handleSelectStation(
                                                 item.id,
-                                                item.name
+                                                item.name,
                                             )
                                         }
                                     >
@@ -129,55 +132,55 @@ export default function DropdownMenu({
     );
 }
 
-/*****************************************************************/
+/* ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     container: {
         flex: 1,
     },
     dropdown: {
-        flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-        maxHeight: 40,
         backgroundColor: "#ECEFF2",
-        paddingHorizontal: 15,
         borderRadius: 10,
         flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        maxHeight: 40,
+        paddingHorizontal: 15,
+    },
+    dropdownArrow: {
+        fontSize: 14,
+        opacity: 0.7,
+        paddingTop: 1,
     },
     dropdownText: {
         fontSize: 15,
     },
-    dropdownArrow: {
-        fontSize: 14,
-        paddingTop: 1,
-        opacity: 0.7,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalContainer: {
-        width: "95%",
-        backgroundColor: "white",
-        borderRadius: 10,
-        padding: 20,
-        maxHeight: "60%",
-    },
     item: {
-        flexDirection: "row",
         alignItems: "center",
-        padding: 8,
         borderBottomWidth: 1,
         borderColor: "#e9e9e9",
+        flexDirection: "row",
+        padding: 8,
     },
     itemCheckmark: {
-        width: 30,
         fontSize: 10,
+        width: 30,
     },
     itemText: {
         color: "#333",
+    },
+    modalContainer: {
+        backgroundColor: "white",
+        borderRadius: 10,
+        maxHeight: "60%",
+        padding: 20,
+        width: "95%",
+    },
+    modalOverlay: {
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        flex: 1,
+        justifyContent: "center",
     },
 });

@@ -15,12 +15,18 @@ import Svg, { Line, Rect, Text as SvgText } from "react-native-svg";
 import DropdownMenu from "./utils/DropdownMenu";
 import DatePicker from "./utils/DatePicker";
 
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
+/* TideGraph Component */
 export default function TideGraph({
     coordinates,
 }: {
     coordinates: number[];
 }): React.JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [height, setHeight] = useState(30);
     const [loading, setLoading] = useState(true);
@@ -38,12 +44,12 @@ export default function TideGraph({
         positionPercentage: 0,
     });
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Constants */
     let previousX = 0;
     const elementRef = useRef<View>(null);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Functions */
     const handleLayout = (event: LayoutChangeEvent) => {
         const { height } = event.nativeEvent.layout;
@@ -55,7 +61,7 @@ export default function TideGraph({
         lat1: number,
         lon1: number,
         lat2: number,
-        lon2: number
+        lon2: number,
     ) {
         const R = 6371; // Radius of the Earth in km
         const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -76,14 +82,14 @@ export default function TideGraph({
         stations: any,
         lat: number,
         lon: number,
-        radius: number
+        radius: number,
     ) {
         return stations.filter((station: any) => {
             const distance = haversineDistance(
                 lat,
                 lon,
                 parseFloat(station.lat),
-                parseFloat(station.lng)
+                parseFloat(station.lng),
             );
             return distance <= radius;
         });
@@ -116,19 +122,19 @@ export default function TideGraph({
         return setCurrentTimeData({ closestAfterIndex, positionPercentage });
     }
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Data Fetching */
     const getTide = async (lat: number, lon: number) => {
         if (!lat && !lon) return;
         try {
             const response = await axios.get(
-                `https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions&units=english`
+                "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions&units=english",
             );
             const nearbyStations = filterStationsByRadius(
                 response.data.stations,
                 lat,
                 lon,
-                50
+                50,
             );
             setNearestTideStations(nearbyStations);
             fetchTideData(nearbyStations[0].id);
@@ -143,23 +149,23 @@ export default function TideGraph({
             setLoading(true);
             const response = await axios.get(
                 `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=NOS.COOPS.TAC.WL&datum=MLLW&begin_date=${moment(
-                    tideDate
+                    tideDate,
                 ).format(
-                    "YYYY-MM-DD"
-                )}&range=30&interval=hilo&units=english&time_zone=lst_ldt&format=json&station=${station}`
+                    "YYYY-MM-DD",
+                )}&range=30&interval=hilo&units=english&time_zone=lst_ldt&format=json&station=${station}`,
             );
 
-            const predictions = response.data.predictions;
+            const { predictions } = response.data;
             const labels = predictions.map((prediction: any) =>
-                moment(prediction.t).format("hh:mmA")
+                moment(prediction.t).format("hh:mmA"),
             );
 
             const times = predictions.map((prediction: any) =>
-                moment(prediction.t)
+                moment(prediction.t),
             );
 
             const data = predictions.map((prediction: any) =>
-                parseFloat(prediction.v)
+                parseFloat(prediction.v),
             );
 
             setTideTimes(times);
@@ -171,7 +177,7 @@ export default function TideGraph({
         }
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         const [lat, lon] = coordinates;
@@ -188,7 +194,7 @@ export default function TideGraph({
         findTimeIndexesAndPercentage();
     }, [tideTimes]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View style={styles.container}>
@@ -204,7 +210,7 @@ export default function TideGraph({
             )}
 
             {loading ? (
-                <View style={[{ height: height }, styles.loaderContainer]}>
+                <View style={[{ height }, styles.loaderContainer]}>
                     <ActivityIndicator size="large" color="#3a92da" />
                 </View>
             ) : (
@@ -222,7 +228,7 @@ export default function TideGraph({
                         height={220}
                         withHorizontalLines={false}
                         withVerticalLines={false}
-                        fromZero={true}
+                        fromZero
                         yAxisSuffix="ft"
                         chartConfig={{
                             backgroundColor: "#2a4c6d",
@@ -300,58 +306,56 @@ export default function TideGraph({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
-    container: {
-        // justifyContent: "space-evenly",
-        alignItems: "center",
-        flexGrow: 1,
-    },
-    dropdownAndDateContainer: {
-        flexDirection: "row",
-        gap: 20,
-        paddingHorizontal: 10,
-        width: "100%",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flex: 1,
-        maxHeight: 80,
-    },
-    verticalLine: {
-        position: "absolute",
-        width: 2,
-        height: "100%",
-        backgroundColor: "red",
-        marginLeft: -5,
-    },
-    loaderContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    chartContainer: {
-        backgroundColor: "#2a4c6d",
-        borderRadius: 20,
-        padding: 10,
-        overflow: "hidden",
-        width: "95%",
-        position: "relative",
-    },
+styles = StyleSheet.create({
     chart: {
         marginLeft: -15,
         paddingTop: 12,
         position: "relative",
     },
-    topContainer: {
-        width: "100%",
-        // display: "flex",
+    chartContainer: {
+        backgroundColor: "#2a4c6d",
+        borderRadius: 20,
+        overflow: "hidden",
+        padding: 10,
+        position: "relative",
+        width: "95%",
+    },
+    container: {
+        alignItems: "center",
+        flexGrow: 1,
+    },
+    dropdownAndDateContainer: {
+        alignItems: "center",
         flexDirection: "row",
-        justifyContent: "space-around",
-        flexWrap: "nowrap",
+        flex: 1,
+        gap: 20,
+        justifyContent: "space-between",
+        maxHeight: 80,
+        paddingHorizontal: 10,
+        width: "100%",
     },
     legendText: {
-        fontSize: 16,
         color: "white",
+        fontSize: 16,
+    },
+    loaderContainer: {
+        alignItems: "center",
+        flex: 1,
+        justifyContent: "center",
+    },
+    topContainer: {
+        flexDirection: "row",
+        flexWrap: "nowrap",
+        justifyContent: "space-around",
+        width: "100%",
+    },
+    verticalLine: {
+        backgroundColor: "red",
+        height: "100%",
+        marginLeft: -5,
+        position: "absolute",
+        width: 2,
     },
 });

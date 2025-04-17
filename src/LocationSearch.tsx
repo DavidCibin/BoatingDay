@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, TextInput, StyleSheet, Text } from "react-native";
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Types */
 interface LocationSearchProps {
     location: string;
@@ -10,7 +10,11 @@ interface LocationSearchProps {
     getGeolocation: () => void;
 }
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* LocationSearch Component */
 export default function LocationSearch({
     location,
@@ -18,11 +22,11 @@ export default function LocationSearch({
     fetchByLocationHandler,
     getGeolocation,
 }: LocationSearchProps): React.JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [searchValue, setSearchValue] = useState("");
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         if (!location.includes("Unknown")) {
@@ -30,14 +34,14 @@ export default function LocationSearch({
         }
     }, [location]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Functions */
     const handleSubmit = () => {
         setLocation(searchValue);
         fetchByLocationHandler(searchValue);
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View style={styles.container}>
@@ -45,7 +49,7 @@ export default function LocationSearch({
                 style={styles.searchCity}
                 onChangeText={setSearchValue}
                 value={searchValue}
-                placeholder={"City, State or Zip Code"}
+                placeholder="City, State or Zip Code"
                 onSubmitEditing={handleSubmit}
                 accessibilityLabel="Search for a city or zip code"
             />
@@ -56,32 +60,32 @@ export default function LocationSearch({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
         alignItems: "center",
-        marginTop: 30,
+        flex: 1,
         flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 30,
         maxHeight: 80,
     },
     icon: {
-        transform: [{ rotate: "-45deg" }],
+        fontSize: 15,
         position: "absolute",
         right: 25,
-        fontSize: 15,
+        transform: [{ rotate: "-45deg" }],
     },
     searchCity: {
+        backgroundColor: "#ECEFF2",
+        borderRadius: 10,
+        fontSize: 15,
         height: 40,
         margin: 12,
-        backgroundColor: "#ECEFF2",
-        paddingLeft: 12,
-        borderRadius: 10,
-        width: "95%",
         maxWidth: 700,
-        fontSize: 15,
+        paddingLeft: 12,
         position: "relative",
+        width: "95%",
     },
 });

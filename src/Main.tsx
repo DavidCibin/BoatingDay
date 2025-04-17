@@ -1,48 +1,47 @@
 import React, { useEffect, useState } from "react";
-import {
-    ImageBackground,
-    View,
-    StyleSheet,
-    ScrollView,
-} from "react-native";
+import { ImageBackground, View, StyleSheet, ScrollView } from "react-native";
 import axios from "axios";
+import * as Location from "expo-location";
 import WaveAnimation from "./WaveAnimation";
 import WeatherBottom from "./WeatherBottom";
 import WeatherTop from "./WeatherTop";
 import { WeatherProps } from "./utils/WeatherProps";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
-import * as Location from "expo-location";
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Types */
 interface LocationProps {
     position: Location.LocationObject;
     getGeolocation: () => void;
 }
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* Main Component */
 export default function Main({
     position,
     getGeolocation,
 }: LocationProps): JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [location, setLocation] = useState<string>("");
     const [weather, setTodaysWeather] = useState<WeatherProps>();
     const [coordinates, setCoordinates] = useState<number[]>([]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Constants */
     const bgImg = { uri: "../assets/images/4.png" };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Data Fetching */
     const fetchByLocationHandler = async (location: string | number) => {
         try {
             const response = await axios.get(
-                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&&accept-language=en&countrycodes=us&limit=1`
+                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&&accept-language=en&countrycodes=us&limit=1`,
             );
 
             if (response.data.length === 0) {
@@ -80,7 +79,7 @@ export default function Main({
     const fetchByGeolocationHandler = async (lat: number, lon: number) => {
         try {
             const response = await axios.get(
-                `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`
+                `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`,
             );
 
             const data = response.data.features[0].properties;
@@ -103,7 +102,7 @@ export default function Main({
         }
         try {
             const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=a0623b11ae5b6d63b28da3564cdd91c7`
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=a0623b11ae5b6d63b28da3564cdd91c7`,
             );
             setTodaysWeather(response.data);
         } catch (error) {
@@ -111,7 +110,7 @@ export default function Main({
         }
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         const lat = position.coords.latitude;
@@ -119,7 +118,7 @@ export default function Main({
         fetchByGeolocationHandler(lat, lon);
     }, [position]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View style={styles.container}>
@@ -152,38 +151,38 @@ export default function Main({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "space-evenly",
         width: "100%",
     },
-    imageBackground: {
-        width: "100%",
-        flex: 1,
-        justifyContent: "space-evenly",
-    },
-    scrollView: {
-        flex: 1,
-    },
     futureForecastContainer: {
         alignItems: "center",
         justifyContent: "center",
     },
-    noWeather: {
-        textAlign: "center",
-        color: "white",
+    imageBackground: {
+        flex: 1,
+        justifyContent: "space-evenly",
+        width: "100%",
     },
     locationAndWeatherContainer: {
         flex: 1,
         flexDirection: "column",
     },
     locationContainer: {
+        alignItems: "center",
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+    },
+    noWeather: {
+        color: "white",
+        textAlign: "center",
+    },
+    scrollView: {
+        flex: 1,
     },
     views: {
         backgroundColor: "#172f46",

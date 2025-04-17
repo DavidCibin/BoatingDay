@@ -6,13 +6,13 @@ import waveAnimation from "../assets/json/waves.json";
 const { width, height } = Dimensions.get("window");
 const animationSize = 1; // Adjust this percentage as needed
 
-const WaveAnimation = () => {
-    /*****************************************************************/
+export default function WaveAnimation(): JSX.Element {
+    /** ************************************************************** */
     /* Constants */
     const animationWidth = width * animationSize;
     const animationHeight = height * animationSize;
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View
@@ -31,6 +31,4 @@ const WaveAnimation = () => {
             />
         </View>
     );
-};
-
-export default WaveAnimation;
+}

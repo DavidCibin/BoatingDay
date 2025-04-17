@@ -14,7 +14,7 @@ import DateTimePicker, {
 import moment from "moment";
 import Svg, { Path } from "react-native-svg";
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Types */
 interface DatePickerProps {
     tideDate: Date;
@@ -26,31 +26,35 @@ interface OnChangeEvent {
     selectedDate?: Date;
 }
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* DatePicker Component */
 export default function DatePickerText({
     tideDate,
     setTideDate,
 }: DatePickerProps): React.JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const [showPicker, setShowPicker] = useState<boolean>(false);
     const [tempDate, setTempDate] = useState<Date>(tideDate);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Refs */
     const fadeAnim = useRef<Animated.Value>(new Animated.Value(0)).current;
-    
-    /*****************************************************************/
+
+    /** ************************************************************** */
     /* Constants */
     const minDate: Date = new Date(
-        new Date().setFullYear(new Date().getFullYear() - 1)
+        new Date().setFullYear(new Date().getFullYear() - 1),
     );
     const maxDate: Date = new Date(
-        new Date().setFullYear(new Date().getFullYear() + 1)
+        new Date().setFullYear(new Date().getFullYear() + 1),
     );
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Functions */
     const onChange = ({ event, selectedDate }: OnChangeEvent) => {
         if (selectedDate) {
@@ -79,15 +83,15 @@ export default function DatePickerText({
         }).start();
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         if (!showPicker) {
             fadeAnim.setValue(0);
         }
-    }, [showPicker]);
+    }, [showPicker, fadeAnim]);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return (
         <View style={styles.container}>
@@ -159,50 +163,50 @@ export default function DatePickerText({
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#ECEFF2",
-        paddingHorizontal: 15,
         borderRadius: 10,
+        flexDirection: "row",
         flexShrink: 1,
         height: 40,
-    },
-    touchable: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
+        paddingHorizontal: 15,
     },
     dateText: {
-        fontSize: 16,
         color: "#000",
+        fontSize: 16,
+    },
+    doneButton: {
+        backgroundColor: "#007AFF",
+        borderRadius: 6,
+        marginTop: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 8,
+    },
+    doneText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
     },
     modalOverlay: {
-        flex: 1,
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
-        justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        flex: 1,
+        justifyContent: "center",
     },
     pickerContainer: {
+        alignItems: "center",
         backgroundColor: "#fff",
         borderRadius: 10,
         padding: 10,
         width: "80%",
+    },
+    touchable: {
         alignItems: "center",
-    },
-    doneButton: {
-        marginTop: 10,
-        backgroundColor: "#007AFF",
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        borderRadius: 6,
-    },
-    doneText: {
-        color: "#fff",
-        fontWeight: "600",
-        fontSize: 16,
+        flexDirection: "row",
+        gap: 8,
     },
 });

@@ -9,24 +9,28 @@ import {
     Text,
     Button,
 } from "react-native";
+import * as Location from "expo-location";
 import Main from "./src/Main";
 import WaveAnimation from "./src/WaveAnimation";
-import * as Location from "expo-location";
 
-/*****************************************************************/
+/** ************************************************************** */
+/* Variables */
+let styles: ReturnType<typeof StyleSheet.create>;
+
+/** ************************************************************** */
 /* App Component */
 export default function App(): JSX.Element {
-    /*****************************************************************/
+    /** ************************************************************** */
     /* State */
     const isDarkMode = useColorScheme() === "dark";
     const [position, setPosition] = useState<Location.LocationObject | null>(
-        null
+        null,
     );
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isPermissionGranted, setIsPermissionGranted] = useState(true);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Functions */
     const getGeolocation = async () => {
         setIsLoading(true);
@@ -48,19 +52,19 @@ export default function App(): JSX.Element {
         }
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Constants */
     const backgroundStyle = {
         backgroundColor: isDarkMode ? "#233e59" : "#172f46",
     };
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         getGeolocation();
     }, []);
 
-    /*****************************************************************/
+    /** ************************************************************** */
     /* Render */
     return isPermissionGranted ? (
         <SafeAreaView style={styles.container}>
@@ -101,19 +105,19 @@ export default function App(): JSX.Element {
     );
 }
 
-/*****************************************************************/
+/** ************************************************************** */
 /* Styles */
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
+    container: {
+        backgroundColor: "#172f46",
+        flex: 1,
+        paddingBottom: 10,
+        paddingTop: 10,
+        width: "100%",
+    },
     scrollViewContent: {
+        flexDirection: "column",
         flexGrow: 1,
         justifyContent: "space-evenly",
-        flexDirection: "column",
-    },
-    container: {
-        flex: 1,
-        width: "100%",
-        backgroundColor: "#172f46",
-        paddingTop: 10,
-        paddingBottom: 10,
     },
 });

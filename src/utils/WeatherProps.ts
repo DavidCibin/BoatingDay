@@ -1,4 +1,4 @@
-export interface WeatherProps {
+export default interface WeatherProps {
     name: string;
     weather: { icon: string; description: string }[];
     main: {
