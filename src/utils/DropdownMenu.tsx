@@ -14,12 +14,16 @@ interface Station {
     name: string;
 }
 
+/*****************************************************************/
+/* Types */
 interface DropdownProps {
     nearbyStations: Station[];
     fetchTideData: (stationId: number) => void;
     setStationName: (stationName: string) => void;
 }
 
+/*****************************************************************/
+/* DropdownMenu Component */
 export default function DropdownMenu({
     nearbyStations,
     fetchTideData,
