@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, TextInput, StyleSheet, Text } from "react-native";
 
+/*****************************************************************/
+/* Types */
 interface LocationSearchProps {
     location: string;
     setLocation: (location: string) => void;
@@ -8,12 +10,14 @@ interface LocationSearchProps {
     getGeolocation: () => void;
 }
 
-const LocationSearch = ({
+/*****************************************************************/
+/* LocationSearch Component */
+export default function LocationSearch({
     location,
     setLocation,
     fetchByLocationHandler,
     getGeolocation,
-}: LocationSearchProps) => {
+}: LocationSearchProps): React.JSX.Element {
     /*****************************************************************/
     /* State */
     const [searchValue, setSearchValue] = useState("");
@@ -50,7 +54,7 @@ const LocationSearch = ({
             </Text>
         </View>
     );
-};
+}
 
 /*****************************************************************/
 /* Styles */
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 30,
         flexDirection: "row",
-        maxHeight: 80, 
+        maxHeight: 80,
     },
     icon: {
         transform: [{ rotate: "-45deg" }],
@@ -81,5 +85,3 @@ const styles = StyleSheet.create({
         position: "relative",
     },
 });
-
-export default LocationSearch;
