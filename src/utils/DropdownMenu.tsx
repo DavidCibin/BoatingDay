@@ -10,32 +10,32 @@ import {
 } from "react-native";
 
 interface Station {
-    id: string;
+    id: number;
     name: string;
 }
 
 interface DropdownProps {
     nearbyStations: Station[];
-    fetchTideData: (stationId: string) => void;
+    fetchTideData: (stationId: number) => void;
     setStationName: (stationName: string) => void;
 }
 
-const DropdownMenu = ({
+export default function DropdownMenu({
     nearbyStations,
     fetchTideData,
     setStationName,
-}: DropdownProps) => {
+}: DropdownProps): React.JSX.Element {
     /*****************************************************************/
     /* State */
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedStationId, setSelectedStationId] = useState<string | null>(
+    const [selectedStationId, setSelectedStationId] = useState<number>(
         nearbyStations[0].id
     );
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
     /*****************************************************************/
     /* Functions */
-    const handleSelectStation = (stationId: string, stationName: string) => {
+    const handleSelectStation = (stationId: number, stationName: string) => {
         setSelectedStationId(stationId);
         setStationName(stationName);
         fetchTideData(stationId);
@@ -51,6 +51,8 @@ const DropdownMenu = ({
         }).start();
     };
 
+    /*****************************************************************/
+    /* Effects */
     useEffect(() => {
         setStationName(nearbyStations[0].name);
         setSelectedStationId(nearbyStations[0].id);
@@ -69,7 +71,7 @@ const DropdownMenu = ({
                 onPress={handleOpen}
                 accessibilityLabel="Open station dropdown"
             >
-                <Text style={styles.dropdownText}>Select Station</Text>
+                <Text style={styles.dropdownText}>Select Nearby Station</Text>
                 <Text style={styles.dropdownArrow}>▼</Text>
             </TouchableOpacity>
 
@@ -85,21 +87,33 @@ const DropdownMenu = ({
                         activeOpacity={1}
                         onPress={() => setIsOpen(false)}
                     >
-                        <Animated.View style={[styles.modalContainer, { opacity: fadeAnim }]}>
+                        <Animated.View
+                            style={[
+                                styles.modalContainer,
+                                { opacity: fadeAnim },
+                            ]}
+                        >
                             <FlatList
                                 data={nearbyStations}
-                                keyExtractor={(item) => item.id}
+                                keyExtractor={(item) => String(item.id)}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
                                         style={styles.item}
                                         onPress={() =>
-                                            handleSelectStation(item.id, item.name)
+                                            handleSelectStation(
+                                                item.id,
+                                                item.name
+                                            )
                                         }
                                     >
                                         <Text style={styles.itemCheckmark}>
-                                            {item.id === selectedStationId ? "✔" : ""}
+                                            {item.id === selectedStationId
+                                                ? "✔"
+                                                : ""}
                                         </Text>
-                                        <Text style={styles.itemText}>{item.name}</Text>
+                                        <Text style={styles.itemText}>
+                                            {item.name}
+                                        </Text>
                                     </TouchableOpacity>
                                 )}
                             />
@@ -109,7 +123,7 @@ const DropdownMenu = ({
             )}
         </View>
     );
-};
+}
 
 /*****************************************************************/
 /* Styles */
@@ -163,5 +177,3 @@ const styles = StyleSheet.create({
         color: "#333",
     },
 });
-
-export default DropdownMenu;
