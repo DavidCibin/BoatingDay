@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ImageBackground, View, StyleSheet, ScrollView } from "react-native";
 import axios from "axios";
 import * as Location from "expo-location";
 import WaveAnimation from "./WaveAnimation";
 import WeatherBottom from "./WeatherBottom";
 import WeatherTop from "./WeatherTop";
-import { WeatherProps } from "./utils/WeatherProps";
+import WeatherProps from "./utils/WeatherProps";
 import LocationSearch from "./LocationSearch";
 import TideGraph from "./TideGraph";
 
@@ -38,10 +38,47 @@ export default function Main({
 
     /** ************************************************************** */
     /* Data Fetching */
-    const fetchByLocationHandler = async (location: string | number) => {
+    const getWeather = async (params: number | number[]) => {
+        let q: string = "";
+        if (typeof params === "number") {
+            q = `zip=${params}`;
+        } else {
+            q = `lat=${params[0]}&lon=${params[1]}`;
+        }
         try {
             const response = await axios.get(
-                `https://nominatim.openstreetmap.org/search?q=${location}&format=json&&accept-language=en&countrycodes=us&limit=1`,
+                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=a0623b11ae5b6d63b28da3564cdd91c7`,
+            );
+            setTodaysWeather(response.data);
+        } catch (error) {
+            console.error("Error fetching weather data", error);
+        }
+    };
+
+    const fetchByGeolocationHandler = useCallback(
+        async (lat: number, lon: number) => {
+            try {
+                const response = await axios.get(
+                    `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`,
+                );
+
+                const data = response.data.features[0].properties;
+                const cityAndState = `${data.geocoding.city}, ${data.geocoding.state}`;
+
+                setLocation(cityAndState);
+                await getWeather([lat, lon]);
+                setCoordinates([lat, lon]);
+            } catch (error) {
+                console.error("fetchByGeolocationHandler", error);
+            }
+        },
+        [],
+    );
+
+    const fetchByLocationHandler = async (fetchLocation: string | number) => {
+        try {
+            const response = await axios.get(
+                `https://nominatim.openstreetmap.org/search?q=${fetchLocation}&format=json&&accept-language=en&countrycodes=us&limit=1`,
             );
 
             if (response.data.length === 0) {
@@ -76,47 +113,13 @@ export default function Main({
         }
     };
 
-    const fetchByGeolocationHandler = async (lat: number, lon: number) => {
-        try {
-            const response = await axios.get(
-                `https://nominatim.openstreetmap.org/reverse?format=geocodejson&lat=${lat}&lon=${lon}`,
-            );
-
-            const data = response.data.features[0].properties;
-            const location = `${data.geocoding.city}, ${data.geocoding.state}`;
-
-            setLocation(location);
-            await getWeather([lat, lon]);
-            setCoordinates([lat, lon]);
-        } catch (error) {
-            console.error("fetchByGeolocationHandler", error);
-        }
-    };
-
-    const getWeather = async (params: number | number[]) => {
-        let q: string = "";
-        if (typeof params === "number") {
-            q = `zip=${params}`;
-        } else {
-            q = `lat=${params[0]}&lon=${params[1]}`;
-        }
-        try {
-            const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?${q}&exclude=hourly,minutely&units=imperial&appid=a0623b11ae5b6d63b28da3564cdd91c7`,
-            );
-            setTodaysWeather(response.data);
-        } catch (error) {
-            console.error("Error fetching weather data", error);
-        }
-    };
-
     /** ************************************************************** */
     /* Effects */
     useEffect(() => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         fetchByGeolocationHandler(lat, lon);
-    }, [position]);
+    }, [position, fetchByGeolocationHandler]);
 
     /** ************************************************************** */
     /* Render */

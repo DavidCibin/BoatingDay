@@ -46,7 +46,8 @@ export default function App(): JSX.Element {
             const location = await Location.getCurrentPositionAsync({});
             setPosition(location);
         } catch (error) {
-            setErrorMsg("Error fetching location");
+            setErrorMsg("Error fetching location:");
+            console.error("Error fetching location:", error);
         } finally {
             setIsLoading(false);
         }
