@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { getWindDirection } from "./utils/wind";
-import { WeatherProps } from "./utils/WeatherProps";
+import getWindDirection from "./utils/wind";
+import WeatherProps from "./utils/WeatherProps";
 
 /** ************************************************************** */
 /* Variables */

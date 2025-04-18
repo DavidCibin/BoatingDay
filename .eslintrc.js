@@ -26,6 +26,8 @@ module.exports = {
         "plugin:prettier/recommended",
     ],
     rules: {
+        "no-plusplus": "off",
+        "no-console": ["warn", { allow: ["error"] }],
         "react/jsx-filename-extension": [1, { extensions: [".tsx", ".jsx"] }],
         "react-native/no-inline-styles": "off",
         "react-native/no-color-literals": "off",
