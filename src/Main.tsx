@@ -37,7 +37,7 @@ export default function Main({
     const bgImg = { uri: "../assets/images/4.png" };
 
     /** ************************************************************** */
-    /* Data Fetching */
+    /* Data Fetching - Callbacks */
     const getWeather = async (params: number | number[]) => {
         let q: string = "";
         if (typeof params === "number") {

@@ -27,6 +27,7 @@ export interface TideStation {
 /** ************************************************************** */
 /* Variables */
 let styles: ReturnType<typeof StyleSheet.create>;
+const previousX = 0;
 
 /** ************************************************************** */
 /* TideGraph Component */
@@ -86,6 +87,8 @@ export default function TideGraph({
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     };
 
+    /** ************************************************************** */
+    /* Data Fetching - Callbacks */
     const fetchTideData = useCallback(
         async (station: number) => {
             try {
@@ -166,18 +169,7 @@ export default function TideGraph({
         [fetchTideData],
     );
 
-    /** ************************************************************** */
-    /* Effects */
-    useEffect(() => {
-        const [lat, lon] = coordinates;
-        getTide(lat, lon);
-    }, [coordinates, getTide]);
-
-    useEffect(() => {
-        if (currentStationId) fetchTideData(currentStationId);
-    }, [tideDate, currentStationId, fetchTideData]);
-
-    useEffect(() => {
+    const calculateCurrentTimeData = useCallback(() => {
         const currentTime = new Date();
         let closestBeforeIndex = -1;
         let closestAfterIndex = -1;
@@ -200,8 +192,38 @@ export default function TideGraph({
                 (Number(afterTime) - Number(beforeTime));
         }
 
+        if (closestBeforeIndex === -1 || closestAfterIndex === -1) {
+            setCurrentTimeData({
+                closestAfterIndex: -1,
+                positionPercentage: 0,
+            });
+            return;
+        }
+
         setCurrentTimeData({ closestAfterIndex, positionPercentage });
-    }, [tideTimes]);
+    }, [tideTimes, setCurrentTimeData]);
+
+    /** ************************************************************** */
+    /* Effects */
+    useEffect(() => {
+        const [lat, lon] = coordinates;
+        getTide(lat, lon);
+    }, [coordinates, getTide]);
+
+    useEffect(() => {
+        if (currentStationId) fetchTideData(currentStationId);
+    }, [tideDate, currentStationId, fetchTideData]);
+
+    useEffect(() => {
+        // Run immediately on mount
+        calculateCurrentTimeData();
+
+        const interval = setInterval(() => {
+            calculateCurrentTimeData();
+        }, 60000); // every 60 seconds
+
+        return () => clearInterval(interval);
+    }, [calculateCurrentTimeData]);
 
     /** ************************************************************** */
     /* Render */
