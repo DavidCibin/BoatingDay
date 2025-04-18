@@ -316,21 +316,30 @@ export default function TideGraph({
 styles = StyleSheet.create({
     chart: {
         marginLeft: -15,
+        paddingTop: 12,
+        position: "relative",
     },
     chartContainer: {
         backgroundColor: "#2a4c6d",
-        borderRadius: 10,
+        borderRadius: 20,
+        overflow: "hidden",
         padding: 10,
+        position: "relative",
+        width: "95%",
     },
     container: {
-        backgroundColor: "#1a2a3a",
-        flex: 1,
-        padding: 10,
+        alignItems: "center",
+        flexGrow: 1,
     },
     dropdownAndDateContainer: {
+        alignItems: "center",
         flexDirection: "row",
+        flex: 1,
+        gap: 20,
         justifyContent: "space-between",
-        marginBottom: 10,
+        maxHeight: 80,
+        paddingHorizontal: 10,
+        width: "100%",
     },
     legendText: {
         color: "#fff",
@@ -338,10 +347,20 @@ styles = StyleSheet.create({
     },
     loaderContainer: {
         alignItems: "center",
+        flex: 1,
         justifyContent: "center",
     },
     topContainer: {
-        alignItems: "center",
-        marginBottom: 10,
+        flexDirection: "row",
+        flexWrap: "nowrap",
+        justifyContent: "space-around",
+        width: "100%",
+    },
+    verticalLine: {
+        backgroundColor: "red",
+        height: "100%",
+        marginLeft: -5,
+        position: "absolute",
+        width: 2,
     },
 });
