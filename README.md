@@ -56,11 +56,18 @@ Feel free to submit issues or pull requests to improve the app. We're always ope
 
 ## Changelog
 ** Version 1.0.1
-The NOAA API parameter for dates, MM/DD/YYYY, has been eliminated. The app now uses YYYY-MM-DD.
+Replaced NOAA API date format from MM/DD/YYYY to YYYY-MM-DD.
 
 ** Version 1.0.2
-Prevent Unkown locations to be displayed.
-Flex layout is now used.
+Prevented unknown locations from being displayed.
+Switched to a flex layout
+
+** Version 1.0.2
+Prevent unknown locations from being displayed.
+Switched to a flex layout.
 
 ** Version 1.2.0
-New App Layout
+Introduced new app layout.
+
+** Version 2.0
+Users can now choose tide dates up to one year in the past or future.
