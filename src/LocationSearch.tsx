@@ -84,7 +84,7 @@ styles = StyleSheet.create({
         height: 40,
         margin: 12,
         maxWidth: 700,
-        paddingLeft: 12,
+        paddingLeft: 15,
         position: "relative",
         width: "95%",
     },
