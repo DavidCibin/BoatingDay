@@ -27,7 +27,6 @@ export interface TideStation {
 /** ************************************************************** */
 /* Variables */
 let styles: ReturnType<typeof StyleSheet.create>;
-const previousX = 0;
 
 /** ************************************************************** */
 /* TideGraph Component */
@@ -359,6 +358,7 @@ styles = StyleSheet.create({
         flex: 1,
         gap: 20,
         justifyContent: "space-between",
+        margin: 12,
         maxHeight: 80,
         paddingHorizontal: 10,
         width: "100%",
