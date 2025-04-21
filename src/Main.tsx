@@ -7,7 +7,7 @@ import WeatherBottom from "./WeatherBottom";
 import WeatherTop from "./WeatherTop";
 import WeatherProps from "./utils/WeatherProps";
 import LocationSearch from "./LocationSearch";
-import TideGraph from "./TideGraph";
+import TideGraph from "./TideGraph2";
 
 /** ************************************************************** */
 /* Types */

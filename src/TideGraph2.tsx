@@ -31,13 +31,7 @@ let styles: ReturnType<typeof StyleSheet.create>;
 
 /** ************************************************************** */
 /* TideGraph Component */
-export default function TideGraph({
-    coordinates,
-}: {
-    coordinates: number[];
-}): React.JSX.Element {
-    /** ************************************************************** */
-    /* State */
+export default function TideGraph({ coordinates }: { coordinates: number[] }) {
     const [height, setHeight] = useState(30);
     const [loading, setLoading] = useState(true);
     const [nearestTideStations, setNearestTideStations] = useState<
@@ -58,52 +52,38 @@ export default function TideGraph({
         closestAfterIndex: 0,
         positionPercentage: 0,
     });
-    const { closestAfterIndex } = currentTimeData;
     const [draggedPosition, setDraggedPosition] = useState<number | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    // Removed duplicate declaration of chartXOffset
+
+    /** ************************************************************** */
+    /* Constants */
+    let previousX = 0;
+    const chartWidth = Dimensions.get("window").width * 1.05;
+
+    /** ************************************************************** */
+    /* Refs */
+    const elementRef = useRef<View>(null);
 
     const panResponder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder: () => {
-                console.log("onStartShouldSetPanResponder");
-                return true;
-            },
+            onStartShouldSetPanResponder: () => true,
             onPanResponderGrant: (evt, gestureState) => {
-                console.log("onPanResponderGrant", gestureState.x0);
-                setIsDragging(true);
                 setDraggedPosition(gestureState.x0);
             },
-            onPanResponderMove: (evt, gestureState) => {
-                if (isDragging) {
-                    console.log("onPanResponderMove", gestureState.moveX);
-                    setDraggedPosition(gestureState.moveX);
-                }
+            onPanResponderMove: (evt) => {
+                const layoutX = evt.nativeEvent.locationX;
+                console.log("layoutX", layoutX);
+
+                setDraggedPosition(layoutX);
             },
-            onPanResponderRelease: (evt, gestureState) => {
-                console.log("onPanResponderRelease hello");
-                setIsDragging(false);
-            },
-            onPanResponderTerminate: (evt, gestureState) => {
-                console.log("onPanResponderTerminate");
-                setIsDragging(false);
+            onPanResponderRelease: () => {
+                setDraggedPosition(null); // Optional: keep final position instead
             },
         }),
     ).current;
 
     /** ************************************************************** */
-    /* Refs */
-    const elementRef = useRef<View>(null);
-    const [chartXOffset, setChartXOffset] = useState(0);
-
-    const handleChartLayout = (event: LayoutChangeEvent) => {
-        setChartXOffset(event.nativeEvent.layout.x);
-    };
-
-    /** ************************************************************** */
     /* Functions */
     const handleLayout = (event: LayoutChangeEvent) => {
-        console.log("Layout event:", event.nativeEvent.layout);
         const { height: layoutHeight } = event.nativeEvent.layout;
         setHeight(layoutHeight);
     };
@@ -148,6 +128,7 @@ export default function TideGraph({
                 );
                 const times = predictions.map((p) => p.t);
                 const data = predictions.map((p) => parseFloat(p.v));
+                console.log(times, data);
 
                 setTideTimes(times);
                 setTideData({ labels, datasets: [{ data }] });
@@ -200,7 +181,7 @@ export default function TideGraph({
                     setStationName(selected.name);
                     fetchTideData(selected.id);
                 }
-            } catch (error: unknown) {
+            } catch (error) {
                 console.error("getTide error:", error);
             }
         },
@@ -230,16 +211,11 @@ export default function TideGraph({
                 (Number(afterTime) - Number(beforeTime));
         }
 
-        if (closestBeforeIndex === -1 || closestAfterIndex === -1) {
-            setCurrentTimeData({
-                closestAfterIndex: -1,
-                positionPercentage: 0,
-            });
-            return;
-        }
-
-        setCurrentTimeData({ closestAfterIndex, positionPercentage });
-    }, [tideTimes, setCurrentTimeData]);
+        setCurrentTimeData({
+            closestAfterIndex,
+            positionPercentage,
+        });
+    }, [tideTimes]);
 
     /** ************************************************************** */
     /* Effects */
@@ -253,13 +229,8 @@ export default function TideGraph({
     }, [tideDate, currentStationId, fetchTideData]);
 
     useEffect(() => {
-        // Run immediately on mount
         calculateCurrentTimeData();
-
-        const interval = setInterval(() => {
-            calculateCurrentTimeData();
-        }, 60000); // every 60 seconds
-
+        const interval = setInterval(calculateCurrentTimeData, 60000);
         return () => clearInterval(interval);
     }, [calculateCurrentTimeData]);
 
@@ -283,135 +254,109 @@ export default function TideGraph({
                     <ActivityIndicator size="large" color="#3a92da" />
                 </View>
             ) : (
-                <View
-                    style={styles.chartContainer}
-                    ref={elementRef}
-                    onLayout={handleChartLayout}
-                >
+                <View style={styles.chartContainer} onLayout={handleLayout}>
                     <View style={styles.topContainer}>
                         <RNText style={styles.legendText}>{stationName}</RNText>
                     </View>
-                    <LineChart
-                        data={tideData}
-                        width={Dimensions.get("window").width * 1.05}
-                        height={220}
-                        withHorizontalLines={false}
-                        withVerticalLines={false}
-                        fromZero
-                        yAxisSuffix="ft"
-                        chartConfig={{
-                            backgroundColor: "#2a4c6d",
-                            backgroundGradientFrom: "#2a4c6d",
-                            backgroundGradientTo: "#2a4c6d",
-                            decimalPlaces: 1,
-                            color: (opacity = 1) =>
-                                `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity = 1) =>
-                                `rgba(255, 255, 255, ${opacity})`,
-                            propsForDots: {
-                                r: "6",
-                                strokeWidth: "2",
-                                stroke: "#6b9bcc",
-                            },
-                        }}
-                        bezier
-                        renderDotContent={({ x, y, index }) => {
-                            let currentPosition =
-                                x * currentTimeData.positionPercentage;
+                    <View
+                        onStartShouldSetResponder={
+                            panResponder.panHandlers.onStartShouldSetResponder
+                        }
+                        onResponderGrant={
+                            panResponder.panHandlers.onResponderGrant
+                        }
+                        onResponderMove={
+                            panResponder.panHandlers.onResponderMove
+                        }
+                        onResponderRelease={
+                            panResponder.panHandlers.onResponderRelease
+                        }
+                        onResponderTerminate={
+                            panResponder.panHandlers.onResponderTerminate
+                        }
+                    >
+                        <LineChart
+                            data={tideData}
+                            width={chartWidth}
+                            height={220}
+                            withHorizontalLines={false}
+                            withVerticalLines={false}
+                            fromZero
+                            yAxisSuffix="ft"
+                            chartConfig={{
+                                backgroundColor: "#2a4c6d",
+                                backgroundGradientFrom: "#2a4c6d",
+                                backgroundGradientTo: "#2a4c6d",
+                                decimalPlaces: 1,
+                                color: (opacity = 1) =>
+                                    `rgba(255, 255, 255, ${opacity})`,
+                                labelColor: (opacity = 1) =>
+                                    `rgba(255, 255, 255, ${opacity})`,
+                                propsForDots: {
+                                    r: "6",
+                                    strokeWidth: "2",
+                                    stroke: "#6b9bcc",
+                                },
+                            }}
+                            bezier
+                            renderDotContent={({ x, y, index }) => {
+                                if (
+                                    draggedPosition ||
+                                    index === currentTimeData.closestAfterIndex
+                                ) {
+                                    const position =
+                                        previousX +
+                                        (x - previousX) *
+                                            currentTimeData.positionPercentage;
 
-                            if (draggedPosition !== null && isDragging) {
-                                const offsetX = draggedPosition - chartXOffset;
-                                currentPosition = offsetX;
+                                    const markerX = draggedPosition || position;
 
-                                // You might want to add constraints to prevent dragging outside the chart bounds
-                                const chartWidth =
-                                    Dimensions.get("window").width * 1.05 - 20; // Account for padding
-                                currentPosition = Math.max(
-                                    0,
-                                    Math.min(currentPosition, chartWidth),
-                                );
-                            }
-                            console.log(
-                                "chartXOffset:",
-                                chartXOffset,
-                                "draggedPosition:",
-                                draggedPosition,
-                                "currentPosition:",
-                                currentPosition,
-                                "currentTimeData.positionPercentage:",
-                                currentTimeData.positionPercentage,
-                                "x:",
-                                x,
-                                "y:",
-                                y,
-                                "index:",
-                                index,
-                            );
-                            if (index === closestAfterIndex || isDragging) {
-                                return (
-                                    <Svg
-                                        key={`interactive-${x}-${y}`}
-                                        height="100%"
-                                        width="100%"
-                                        style={{
-                                            position: "absolute",
-                                            left: 0,
-                                        }}
-                                        onStartShouldSetResponder={
-                                            panResponder.panHandlers
-                                                .onStartShouldSetResponder
-                                        }
-                                        onResponderGrant={
-                                            panResponder.panHandlers
-                                                .onResponderGrant
-                                        }
-                                        onResponderMove={
-                                            panResponder.panHandlers
-                                                .onResponderMove
-                                        }
-                                        onResponderRelease={
-                                            panResponder.panHandlers
-                                                .onResponderRelease
-                                        }
-                                        onResponderTerminate={
-                                            panResponder.panHandlers
-                                                .onResponderTerminate
-                                        }
-                                    >
-                                        <Line
-                                            x1={currentPosition}
-                                            y1={0}
-                                            x2={currentPosition}
-                                            y2={185}
-                                            stroke="#ccc"
-                                            strokeWidth={2}
-                                        />
-                                        <Rect
-                                            x={currentPosition - 33}
-                                            y={80}
-                                            width="66"
-                                            height="19"
-                                            fill="#45576a"
-                                            rx="5"
-                                            ry="5"
-                                        />
-                                        <SvgText
-                                            x={currentPosition}
-                                            y={90}
-                                            fill="white"
-                                            fontSize="12"
-                                            textAnchor="middle"
-                                            alignmentBaseline="middle"
+                                    return (
+                                        <Svg
+                                            key={`interactive-${x}-${y}`}
+                                            height="100%"
+                                            width="100%"
+                                            style={{
+                                                position: "absolute",
+                                                left: 0,
+                                            }}
                                         >
-                                            {moment().format("hh:mmA")}
-                                        </SvgText>
-                                    </Svg>
-                                );
-                            }
-                            return null;
-                        }}
-                        style={styles.chart}
-                    />
+                                            <Line
+                                                x1={markerX}
+                                                y1={0}
+                                                x2={markerX}
+                                                y2={185}
+                                                stroke="#ccc"
+                                                strokeWidth={2}
+                                            />
+                                            <Rect
+                                                x={markerX - 33}
+                                                y={80}
+                                                width="66"
+                                                height="19"
+                                                fill="#45576a"
+                                                rx="5"
+                                                ry="5"
+                                            />
+                                            <SvgText
+                                                x={markerX}
+                                                y={90}
+                                                fill="white"
+                                                fontSize="12"
+                                                textAnchor="middle"
+                                                alignmentBaseline="middle"
+                                            >
+                                                {moment().format("hh:mmA")}
+                                            </SvgText>
+                                        </Svg>
+                                    );
+                                }
+                                previousX = x;
+                                return null;
+                            }}
+                            style={styles.chart}
+                        />
+                    </View>
                 </View>
             )}
         </View>
