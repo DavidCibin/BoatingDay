@@ -49,22 +49,22 @@ export default function TideGraph({
     /** ************************************************************** */
     /* State */
     const [loading, setLoading] = useState(true);
-    const [nearestTideStations, setNearestTideStations] = useState<
-        TideStation[]
-    >([]);
+    const [tideDate, setTideDate] = useState(new Date());
+    const [currentTide, setCurrentTide] = useState(Number);
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [stationName, setStationName] = useState<string>("");
     const [currentStationId, setCurrentStationId] = useState<number>();
-    const [tideDate, setTideDate] = useState(new Date());
     const [draggedPosition, setDraggedPosition] = useState<number | null>(null);
-    // const [isDragging, setIsDragging] = useState(false);
     const [tideData, setTideData] = useState<{ time: Date; height: number }[]>(
         [],
     );
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [currentTide, setCurrentTide] = useState(Number);
+    const [nearestTideStations, setNearestTideStations] = useState<
+        TideStation[]
+    >([]);
 
+    /** ************************************************************** */
+    /* Constants */
     const width = Dimensions.get("window").width - 50;
-    // const { width } = width - 20;
     const height = 220;
     const margin = { top: 30, right: 30, bottom: 40, left: 55 };
     const innerWidth = width - margin.left - margin.right;
@@ -72,7 +72,6 @@ export default function TideGraph({
 
     /** ************************************************************** */
     /* Functions */
-
     const haversineDistance = (
         lat1: number,
         lon1: number,
@@ -240,7 +239,8 @@ export default function TideGraph({
         return <View />;
     }
 
-    // Set up PanResponder for draggable marker
+    /** ************************************************************** */
+    /* PanResponder */
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (evt, gestureState) => {
@@ -295,6 +295,8 @@ export default function TideGraph({
         },
     });
 
+    /** ************************************************************** */
+    /* Render */
     return (
         <View style={styles.container}>
             {nearestTideStations?.length > 0 && (
