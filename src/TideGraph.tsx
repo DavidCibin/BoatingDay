@@ -223,10 +223,6 @@ export default function TideGraph({
             Number.isNaN(minTime.getTime()) ||
             Number.isNaN(maxTime.getTime())
         ) {
-            console.warn("minTime or maxTime is invalid:", {
-                minTime,
-                maxTime,
-            });
             return [];
         }
 
