@@ -11,7 +11,7 @@ import {
     LinearGradient,
     Stop,
 } from "react-native-svg";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
     Dimensions,
     View,
@@ -182,61 +182,81 @@ export default function TideGraph({
 
     /** ************************************************************** */
     /* D3 */
-    const xScale = d3
-        .scaleTime()
-        .domain(
-            d3.extent(tideData, (d) => {
-                return d.time;
-            }) as [Date, Date],
-        )
-        .range([0, innerWidth]);
+    /** ************************************************************** */
+    /* D3 Setup with useMemo */
 
-    const rawHeights = tideData.map((d) => d.height);
-    const minHeight = Math.min(...rawHeights);
-    const maxHeight = Math.max(...rawHeights);
+    const xScale = useMemo(() => {
+        return d3
+            .scaleTime()
+            .domain(d3.extent(tideData, (d) => d.time) as [Date, Date])
+            .range([0, innerWidth]);
+    }, [tideData, innerWidth]);
 
-    const yScale = d3
-        .scaleLinear()
-        .domain([minHeight, maxHeight])
-        .range([innerHeight, 0]);
+    const { yScale, minHeight, maxHeight } = useMemo(() => {
+        const rawHeights = tideData.map((d) => d.height);
+        const min = Math.min(...rawHeights);
+        const max = Math.max(...rawHeights);
+        const scale = d3
+            .scaleLinear()
+            .domain([min, max])
+            .range([innerHeight, 0]);
 
-    const minTime = d3.min(tideData, (d) => d.time)!;
-    const maxTime = d3.max(tideData, (d) => d.time)!;
+        return { yScale: scale, minHeight: min, maxHeight: max };
+    }, [tideData, innerHeight]);
 
-    const tickCount = 5;
+    const line = useMemo(() => {
+        return d3
+            .line<{ time: Date; height: number }>()
+            .x((d) => xScale(d.time))
+            .y((d) => yScale(d.height))
+            .curve(d3.curveBumpX);
+    }, [xScale, yScale]);
 
-    if (
-        !minTime ||
-        !maxTime ||
-        Number.isNaN(minTime.getTime()) ||
-        Number.isNaN(maxTime.getTime())
-    ) {
-        console.warn("minTime or maxTime is invalid:", { minTime, maxTime });
-        return <View />; // or fallback to default ticks
-    }
+    const formatTime = useMemo(() => {
+        return d3.utcFormat("%-I:%M%p"); // UTC formatting, e.g., 3:00PM
+    }, []);
 
-    // Manually generate 5 ticks: includes min and max, plus 3 in between
-    const customTicks = Array.from({ length: tickCount }, (_, i) => {
-        return new Date(
-            minTime.getTime() +
-                (i * (maxTime.getTime() - minTime.getTime())) / (tickCount - 1),
+    const customTicks = useMemo(() => {
+        const minTime = d3.min(tideData, (d) => d.time);
+        const maxTime = d3.max(tideData, (d) => d.time);
+
+        if (
+            !minTime ||
+            !maxTime ||
+            Number.isNaN(minTime.getTime()) ||
+            Number.isNaN(maxTime.getTime())
+        ) {
+            console.warn("minTime or maxTime is invalid:", {
+                minTime,
+                maxTime,
+            });
+            return [];
+        }
+
+        const tickCount = 5;
+        return Array.from({ length: tickCount }, (_, i) => {
+            return new Date(
+                minTime.getTime() +
+                    (i * (maxTime.getTime() - minTime.getTime())) /
+                        (tickCount - 1),
+            );
+        });
+    }, [tideData]);
+
+    const currentTimeX = useMemo(
+        () => xScale(currentTime),
+        [xScale, currentTime],
+    );
+
+    const isTideDataValid = useMemo(() => {
+        return (
+            tideData.length > 0 &&
+            !tideData.some((d) => !d.time || Number.isNaN(d.time.getTime()))
         );
-    });
-    const formatTime = d3.utcFormat("%-I:%M%p"); // Always in UTC
+    }, [tideData]);
 
-    const line = d3
-        .line<{ time: Date; height: number }>()
-        .x((d) => xScale(d.time))
-        .y((d) => yScale(d.height))
-        .curve(d3.curveBumpX);
-
-    const currentTimeX = xScale(currentTime);
-
-    if (
-        !tideData.length ||
-        tideData.some((d) => !d.time || Number.isNaN(d.time.getTime()))
-    ) {
-        return <View />;
+    if (!isTideDataValid) {
+        return <View />; // fallback view if data is invalid
     }
 
     /** ************************************************************** */
