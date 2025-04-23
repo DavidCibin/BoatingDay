@@ -71,3 +71,6 @@ Introduced new app layout.
 
 ** Version 2.0
 Users can now choose tide dates up to one year in the past or future.
+
+** Version 3.0
+Uses D3.js instead of React Native Chart Kit, as D3.js is more reliable and flexible.
