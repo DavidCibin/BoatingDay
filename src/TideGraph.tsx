@@ -181,10 +181,7 @@ export default function TideGraph({
     }, [tideDate, currentStationId, fetchTideData]);
 
     /** ************************************************************** */
-    /* D3 */
-    /** ************************************************************** */
     /* D3 Setup with useMemo */
-
     const xScale = useMemo(() => {
         return d3
             .scaleTime()
