@@ -14,6 +14,7 @@ import moment from "moment";
 import Svg, { Line, Rect, Text as SvgText } from "react-native-svg";
 import DropdownMenu from "./utils/DropdownMenu";
 import DatePicker from "./utils/DatePicker";
+import TimeLine from "./TimeLine";
 
 /** ************************************************************** */
 /* Types */
@@ -301,7 +302,7 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }) {
                             bezier
                             renderDotContent={({ x, y, index }) => {
                                 if (
-                                    draggedPosition ||
+                                    !draggedPosition &&
                                     index === currentTimeData.closestAfterIndex
                                 ) {
                                     const position =
@@ -309,46 +310,52 @@ export default function TideGraph({ coordinates }: { coordinates: number[] }) {
                                         (x - previousX) *
                                             currentTimeData.positionPercentage;
 
-                                    const markerX = draggedPosition || position;
+                                    console.log("SHOULD NOT", position);
 
                                     return (
-                                        <Svg
-                                            key={`interactive-${x}-${y}`}
-                                            height="100%"
-                                            width="100%"
-                                            style={{
-                                                position: "absolute",
-                                                left: 0,
-                                            }}
-                                        >
-                                            <Line
-                                                x1={markerX}
-                                                y1={0}
-                                                x2={markerX}
-                                                y2={185}
-                                                stroke="#ccc"
-                                                strokeWidth={2}
-                                            />
-                                            <Rect
-                                                x={markerX - 33}
-                                                y={80}
-                                                width="66"
-                                                height="19"
-                                                fill="#45576a"
-                                                rx="5"
-                                                ry="5"
-                                            />
-                                            <SvgText
-                                                x={markerX}
-                                                y={90}
-                                                fill="white"
-                                                fontSize="12"
-                                                textAnchor="middle"
-                                                alignmentBaseline="middle"
-                                            >
-                                                {moment().format("hh:mmA")}
-                                            </SvgText>
-                                        </Svg>
+                                        <TimeLine
+                                            key={`${x}-${y}`}
+                                            marker={position}
+                                            time={moment().format("hh:mmA")}
+                                            passKey={`${x}-${y}`}
+                                        />
+                                    );
+                                }
+                                if (draggedPosition) {
+                                    let markerX: number = 0;
+                                    console.log(
+                                        "index:",
+                                        index,
+                                        "x:",
+                                        x,
+                                        "draggedPosition:",
+                                        draggedPosition,
+                                    );
+
+                                    if (
+                                        (index === 0 && x > draggedPosition) ||
+                                        (index === 3 && x < draggedPosition)
+                                    ) {
+                                        console.log("anytime here?");
+                                        setDraggedPosition(null);
+                                    } else {
+                                        // setDraggedPosition(null);
+                                        console.log(
+                                            "draggedPosition HELLO",
+                                            draggedPosition,
+                                        );
+                                        markerX =
+                                            draggedPosition ??
+                                            currentTimeData.positionPercentage *
+                                                chartWidth;
+                                    }
+                                    return (
+                                        <TimeLine
+                                            key={`${x}-${y}`}
+                                            marker={markerX}
+                                            time={moment().format("hh:mmA")}
+                                            passKey={`${x}-${y}`}
+                                        />
                                     );
                                 }
                                 previousX = x;

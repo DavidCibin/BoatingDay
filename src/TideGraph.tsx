@@ -143,11 +143,15 @@ export default function TideGraph({
                     predictions,
                 }: { predictions: { t: string; v: string }[] } = response.data;
 
+                console.log("Predictions:", predictions);
+
                 const labels = predictions.map((p) =>
                     moment(p.t).format("hh:mmA"),
                 );
                 const times = predictions.map((p) => p.t);
                 const data = predictions.map((p) => parseFloat(p.v));
+
+                console.log("HELLO", times, labels, data);
 
                 setTideTimes(times);
                 setTideData({ labels, datasets: [{ data }] });
@@ -263,6 +267,8 @@ export default function TideGraph({
         return () => clearInterval(interval);
     }, [calculateCurrentTimeData]);
 
+    console.log("HERE", tideTimes, tideData);
+
     /** ************************************************************** */
     /* Render */
     return (
@@ -331,22 +337,22 @@ export default function TideGraph({
                                     Math.min(currentPosition, chartWidth),
                                 );
                             }
-                            console.log(
-                                "chartXOffset:",
-                                chartXOffset,
-                                "draggedPosition:",
-                                draggedPosition,
-                                "currentPosition:",
-                                currentPosition,
-                                "currentTimeData.positionPercentage:",
-                                currentTimeData.positionPercentage,
-                                "x:",
-                                x,
-                                "y:",
-                                y,
-                                "index:",
-                                index,
-                            );
+                            // console.log(
+                            //     "chartXOffset:",
+                            //     chartXOffset,
+                            //     "draggedPosition:",
+                            //     draggedPosition,
+                            //     "currentPosition:",
+                            //     currentPosition,
+                            //     "currentTimeData.positionPercentage:",
+                            //     currentTimeData.positionPercentage,
+                            //     "x:",
+                            //     x,
+                            //     "y:",
+                            //     y,
+                            //     "index:",
+                            //     index,
+                            // );
                             if (index === closestAfterIndex || isDragging) {
                                 return (
                                     <Svg
